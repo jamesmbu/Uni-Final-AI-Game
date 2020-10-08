@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "4.25",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "FYP_K1811535",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
