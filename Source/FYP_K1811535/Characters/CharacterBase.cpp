@@ -4,6 +4,7 @@
 #include "CharacterBase.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "FYP_K1811535/HealthComponent.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -11,6 +12,10 @@ ACharacterBase::ACharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	/*
+	 * Create Components
+	 */
+	
 	// Create Camera Boom
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
@@ -21,6 +26,10 @@ ACharacterBase::ACharacterBase()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false; // the boom is in charge of camera rotation
+
+	// Create Health
+	HealthComponent=CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	
 }
 
 // Called when the game starts or when spawned

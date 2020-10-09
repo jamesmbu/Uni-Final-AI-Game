@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 
+class UHealthComponent;
+
 UCLASS()
 class FYP_K1811535_API ACharacterBase : public ACharacter
 {
@@ -22,6 +24,10 @@ public:
 	// Follow camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	// Health
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	class UHealthComponent* HealthComponent;
 	
 protected:
 	// Called when the game starts or when spawned
