@@ -19,7 +19,7 @@ ACharacterBase::ACharacterBase()
 	// Create Camera Boom
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
-	CameraBoom->TargetArmLength = 600.f; // follow distance
+	CameraBoom->TargetArmLength = 350.f; // follow distance
 	CameraBoom->bUsePawnControlRotation = true; // rotation based on controller
 
 	// Create Follow Camera
