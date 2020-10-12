@@ -17,6 +17,15 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+	// Input-related functions
+	void MoveForward(float AxisValue);
+	void MoveRight(float AxisValue);
+	void LookUp(float AxisValue);
+	void LookRight(float AxisValue);
+
+	void LookUpRate(float AxisValue);
+	void LookRightRate(float AxisValue);
+	float RotationRate = 70.f;
 	// Camera boom
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
