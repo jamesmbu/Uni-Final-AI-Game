@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "FYP_K1811535/HealthComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -12,7 +13,7 @@ ACharacterBase::ACharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	/*
+	/*__________________________________________________________________________
 	 * Create Components
 	 */
 	
@@ -29,19 +30,42 @@ ACharacterBase::ACharacterBase()
 
 	// Create Health
 	HealthComponent=CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
+	// __________________________________________________________________________
 	
+	// Make controller rotation not effect the character's rotation; only the camera will move.
+	bUseControllerRotationYaw = false; // < this is the only line that matters
+	bUseControllerRotationPitch = false; // < + |,< these are just in case
+	bUseControllerRotationRoll = false;
+
+	// Set character to move in direction of input
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
+	GetCharacterMovement()->JumpZVelocity = 500.f;
+	GetCharacterMovement()->AirControl = 0.2f;
 }
 /*
  * Input
  */
 void ACharacterBase::MoveForward(float AxisValue)
 {
-	AddMovementInput(GetActorForwardVector() * AxisValue);
+	if(Controller && AxisValue != 0.f)
+	{
+		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(DirectionToMove,AxisValue);
+	}
+
 }
 
 void ACharacterBase::MoveRight(float AxisValue)
 {
-	AddMovementInput(GetActorRightVector() * AxisValue);
+	if (Controller && AxisValue != 0)
+	{
+		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		AddMovementInput(DirectionToMove, AxisValue);
+	}
 }
 
 void ACharacterBase::LookUp(float AxisValue)
@@ -87,6 +111,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	check(PlayerInputComponent); // macro to check validity of the input component
+	
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ACharacterBase::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ACharacterBase::MoveRight);
 
