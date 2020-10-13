@@ -44,16 +44,71 @@ ACharacterBase::ACharacterBase()
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 }
+
+
+
+
+// Called when the game starts or when spawned
+void ACharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
+// Called every frame
+void ACharacterBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+// Called to bind functionality to input
+void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	check(PlayerInputComponent); // macro to check validity of the input component
+
+	// Movement bindings
+	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ACharacterBase::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ACharacterBase::MoveRight);
+
+	// 'Looking' bindings
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ACharacterBase::LookUp);
+	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &ACharacterBase::LookRight);
+
+	// Binding for constant axis changes (i.e. when using a games controller)
+	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &ACharacterBase::LookUpRate);
+	PlayerInputComponent->BindAxis(TEXT("LookRightRate"), this, &ACharacterBase::LookRightRate);
+
+	// Action binding
+	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacterBase::Jump);
+	PlayerInputComponent->BindAction(TEXT("Focus"), EInputEvent::IE_Pressed, this, &ACharacterBase::SetFocused);
+	PlayerInputComponent->BindAction(TEXT("Focus"), EInputEvent::IE_Released, this, &ACharacterBase::SetUnfocused);
+
+}
 /*
  * Input
  */
+void ACharacterBase::SetFocused()
+{
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	bUseControllerRotationYaw = true;
+}
+
+void ACharacterBase::SetUnfocused()
+{
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationYaw = false;
+}
+
 void ACharacterBase::MoveForward(float AxisValue)
 {
-	if(Controller && AxisValue != 0.f)
+	if (Controller && AxisValue != 0.f)
 	{
 		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f); // get yaw of the controller's rotation vector
 		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X); // get X from the rotation matrix of the 'YawRotation'
-		AddMovementInput(DirectionToMove,AxisValue);
+		AddMovementInput(DirectionToMove, AxisValue);
 	}
 
 }
@@ -91,43 +146,5 @@ void ACharacterBase::LookRightRate(float AxisValue)
 /*
  * Input end
  */
-
-// Called when the game starts or when spawned
-void ACharacterBase::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ACharacterBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	check(PlayerInputComponent); // macro to check validity of the input component
-
-	// Movement bindings
-	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ACharacterBase::MoveForward);
-	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ACharacterBase::MoveRight);
-
-	// 'Looking' bindings
-	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ACharacterBase::LookUp);
-	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &ACharacterBase::LookRight);
-
-	// Binding for constant axis changes (i.e. when using a games controller)
-	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &ACharacterBase::LookUpRate);
-	PlayerInputComponent->BindAxis(TEXT("LookRightRate"), this, &ACharacterBase::LookRightRate);
-
-	// Action binding
-	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacterBase::Jump);
-}
-
 
 

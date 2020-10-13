@@ -18,6 +18,8 @@ public:
 	ACharacterBase();
 
 	// Input-related functions
+	void SetFocused();
+	void SetUnfocused();
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void LookUp(float AxisValue);
