@@ -51,8 +51,8 @@ void ACharacterBase::MoveForward(float AxisValue)
 {
 	if(Controller && AxisValue != 0.f)
 	{
-		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
-		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f); // get yaw of the controller's rotation vector
+		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X); // get X from the rotation matrix of the 'YawRotation'
 		AddMovementInput(DirectionToMove,AxisValue);
 	}
 
@@ -62,8 +62,8 @@ void ACharacterBase::MoveRight(float AxisValue)
 {
 	if (Controller && AxisValue != 0)
 	{
-		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
-		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f); // get yaw of the controller's rotation vector
+		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y); // get Y from the rotation matrix of the 'YawRotation'
 		AddMovementInput(DirectionToMove, AxisValue);
 	}
 }
@@ -112,19 +112,21 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	check(PlayerInputComponent); // macro to check validity of the input component
-	
+
+	// Movement bindings
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ACharacterBase::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ACharacterBase::MoveRight);
 
+	// 'Looking' bindings
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ACharacterBase::LookUp);
 	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &ACharacterBase::LookRight);
 
-	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacterBase::Jump);
-
-	// controllers/gamepads
+	// Binding for constant axis changes (i.e. when using a games controller)
 	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &ACharacterBase::LookUpRate);
 	PlayerInputComponent->BindAxis(TEXT("LookRightRate"), this, &ACharacterBase::LookRightRate);
-	
+
+	// Action binding
+	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacterBase::Jump);
 }
 
 
