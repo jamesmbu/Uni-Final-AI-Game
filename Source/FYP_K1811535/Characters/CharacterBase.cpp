@@ -106,9 +106,11 @@ void ACharacterBase::MoveForward(float AxisValue)
 {
 	if (Controller && AxisValue != 0.f)
 	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
 		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f); // get yaw of the controller's rotation vector
 		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X); // get X from the rotation matrix of the 'YawRotation'
 		AddMovementInput(DirectionToMove, AxisValue);
+		GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	}
 
 }

@@ -25,6 +25,9 @@ void UDefaultPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		FVector LateralVelocity = FVector(Velocity.X, Velocity.Y, 0.f);
 		MovementSpeed = LateralVelocity.Size(); // magnitude of the vector
 
+		// Calculate Direction
+		Direction = CalculateDirection(Velocity, Pawn->GetActorRotation());
+		UE_LOG(LogTemp, Warning, TEXT("Direction: %f"),Direction);
 		bInTheAir = Pawn->GetMovementComponent()->IsFalling();
 	}
 }

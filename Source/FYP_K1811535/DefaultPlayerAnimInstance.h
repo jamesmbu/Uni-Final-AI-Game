@@ -21,9 +21,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Animation Properties")
 	void CPPUpdateAnimation();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	float MovementSpeed;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
+	float Direction;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	bool bInTheAir;
 
