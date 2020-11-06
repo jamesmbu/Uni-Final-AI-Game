@@ -18,8 +18,14 @@ public:
 	ACharacterBase();
 
 	// Input-related functions
-	void SetFocused();
-	void SetUnfocused();
+	void SetStance();
+	bool isAttackStance;
+
+	void SprintBegin();
+	void SprintEnd();
+	bool canSprint;
+	bool isSprinting;
+	
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void LookUp(float AxisValue);
@@ -39,6 +45,12 @@ public:
 	// Health
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health", meta = (AllowPrivateAccess = "true"))
 	class UHealthComponent* HealthComponent;
+
+	// Movement
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float BaseJogSpeed = 400.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float SprintMultiplier = 1.5f;
 	
 protected:
 	// Called when the game starts or when spawned

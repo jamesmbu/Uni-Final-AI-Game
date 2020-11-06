@@ -27,7 +27,6 @@ void UDefaultPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		// Calculate Direction
 		Direction = CalculateDirection(Velocity, Pawn->GetActorRotation());
-		UE_LOG(LogTemp, Warning, TEXT("Direction: %f"),Direction);
 		bInTheAir = Pawn->GetMovementComponent()->IsFalling();
 	}
 }

@@ -2,6 +2,8 @@
 
 
 #include "CharacterBase.h"
+
+#include "EditorCategoryUtils.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "FYP_K1811535/HealthComponent.h"
@@ -12,7 +14,9 @@ ACharacterBase::ACharacterBase()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	isAttackStance = false;
+	isSprinting = false;
+	canSprint = false;
 	/*__________________________________________________________________________
 	 * Create Components
 	 */
@@ -33,13 +37,11 @@ ACharacterBase::ACharacterBase()
 
 	// __________________________________________________________________________
 	
-	// Make controller rotation not effect the character's rotation; only the camera will move.
+	// Make controller rotation effect the character's rotation
 	bUseControllerRotationYaw = false; // < this is the only line that matters
-	bUseControllerRotationPitch = false; // < + |,< these are just in case
-	bUseControllerRotationRoll = false;
 
 	// Set character to move in direction of input
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.2f;
@@ -59,7 +61,8 @@ void ACharacterBase::BeginPlay()
 void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	//UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), GetVelocity().Size()); //SPEED TEST
+	
 }
 
 // Called to bind functionality to input
@@ -83,42 +86,77 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	// Action binding
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacterBase::Jump);
-	PlayerInputComponent->BindAction(TEXT("Focus"), EInputEvent::IE_Pressed, this, &ACharacterBase::SetFocused);
-	PlayerInputComponent->BindAction(TEXT("Focus"), EInputEvent::IE_Released, this, &ACharacterBase::SetUnfocused);
-
+	PlayerInputComponent->BindAction(TEXT("Stance"), EInputEvent::IE_Pressed, this, &ACharacterBase::SetStance);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this, &ACharacterBase::SprintBegin);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this, &ACharacterBase::SprintEnd);
 }
 /*
  * Input
  */
-void ACharacterBase::SetFocused()
+void ACharacterBase::SetStance()
 {
-	GetCharacterMovement()->bOrientRotationToMovement = false;
-	bUseControllerRotationYaw = true;
+	if (isAttackStance) // transition between stances: attack -> neutral
+	{
+		isAttackStance = false;
+		bUseControllerRotationYaw = false;
+	}
+	else if (!isAttackStance) // transition between stances: neutral -> attack
+	{
+		isAttackStance = true;
+		bUseControllerRotationYaw = true;
+	}
+
 }
 
-void ACharacterBase::SetUnfocused()
+void ACharacterBase::SprintBegin()
 {
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	bUseControllerRotationYaw = false;
+	if (canSprint)
+	{
+		isSprinting = true;
+		GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed * SprintMultiplier;
+	}
+}
+
+void ACharacterBase::SprintEnd()
+{
+	if (isSprinting) 
+	{
+		isSprinting = false;
+		GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed / SprintMultiplier;
+	}
 }
 
 void ACharacterBase::MoveForward(float AxisValue)
 {
 	if (Controller && AxisValue != 0.f)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+		if (AxisValue > 0) // Forward movement
+		{
+			canSprint = true;
+			
+
+		}
+		else // Backward movement
+		{
+			canSprint = false;
+			GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed / 2;
+		}
 		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f); // get yaw of the controller's rotation vector
 		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X); // get X from the rotation matrix of the 'YawRotation'
 		AddMovementInput(DirectionToMove, AxisValue);
-		GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	}
-
 }
 
 void ACharacterBase::MoveRight(float AxisValue)
 {
 	if (Controller && AxisValue != 0)
 	{
+		if (GetInputAxisValue(TEXT("MoveForward")) >= 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed;
+		}
+		
+		canSprint = false;
 		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f); // get yaw of the controller's rotation vector
 		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y); // get Y from the rotation matrix of the 'YawRotation'
 		AddMovementInput(DirectionToMove, AxisValue);
