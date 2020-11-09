@@ -10,6 +10,11 @@ void UDefaultPlayerAnimInstance::NativeInitializeAnimation()
 	{
 		Pawn = TryGetPawnOwner();
 	}
+	ACharacterBase* owningCharacter = Cast<ACharacterBase>(Pawn);
+	if (owningCharacter)
+	{
+		owningCharacter->bPlayerAttackStance.AddDynamic(this, &UDefaultPlayerAnimInstance::OnPlayerSwitchStance);
+	}
 }
 
 void UDefaultPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -34,4 +39,9 @@ void UDefaultPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 void UDefaultPlayerAnimInstance::CPPUpdateAnimation()
 {
 
+}
+
+void UDefaultPlayerAnimInstance::OnPlayerSwitchStance(bool bInAttackStance_)
+{
+	bInAttackStance = bInAttackStance_;
 }

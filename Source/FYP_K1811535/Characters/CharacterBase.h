@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeStance, bool, bInAttackStance);
+
 class UHealthComponent;
 
 UCLASS()
@@ -17,23 +19,31 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
-	// Input-related functions
+	/*~~~~~~~~~~  Input-related functions  ~~~~~~~~~~*/
+	// Player Stance
 	void SetStance();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool isAttackStance;
+	UPROPERTY(BlueprintAssignable, Category = "EventDispatchers")
+	FOnChangeStance bPlayerAttackStance;
 
+	// Sprinting
 	void SprintBegin();
 	void SprintEnd();
 	bool canSprint;
 	bool isSprinting;
-	
+
+	// Movement & Looking
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void LookUp(float AxisValue);
 	void LookRight(float AxisValue);
-
+	
 	void LookUpRate(float AxisValue);
 	void LookRightRate(float AxisValue);
-	float RotationRate = 70.f;
+	
+
+	/*~~~~~~~~~~  Components  ~~~~~~~~~~*/
 	// Camera boom
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
@@ -47,11 +57,18 @@ public:
 	class UHealthComponent* HealthComponent;
 
 	// Movement
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+		// Movement speed when jogging
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move & Look Variables")
 	float BaseJogSpeed = 400.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+		// How much faster the player goes when sprinting
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move & Look Variables")
 	float SprintMultiplier = 1.5f;
-	
+		// How much slower the player goes when in backwards motion
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move & Look Variables")
+	float BackwardsMotionMultiplier = 0.6f;
+		// For gamepad analogue stick aiming- rate at which rotation will occur
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move & Look Variables")
+	float RotationRate = 70.f; 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

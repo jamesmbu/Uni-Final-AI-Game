@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Characters/CharacterBase.h"
 #include "DefaultPlayerAnimInstance.generated.h"
+
 
 /**
  * 
@@ -30,8 +32,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	bool bInTheAir;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bInAttackStance;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	class APawn* Pawn;
-
+	UFUNCTION()
+	void OnPlayerSwitchStance(bool bInAttackStance_);
 	
 };

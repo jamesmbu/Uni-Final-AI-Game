@@ -38,17 +38,14 @@ ACharacterBase::ACharacterBase()
 	// __________________________________________________________________________
 	
 	// Make controller rotation effect the character's rotation
-	bUseControllerRotationYaw = false; // < this is the only line that matters
+	bUseControllerRotationYaw = false;
 
 	// Set character to move in direction of input
-	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 }
-
-
-
 
 // Called when the game starts or when spawned
 void ACharacterBase::BeginPlay()
@@ -62,7 +59,7 @@ void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	//UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), GetVelocity().Size()); //SPEED TEST
-	
+	//UE_LOG(LogTemp, Warning, TEXT("Control Rotation Yaw: %f"), Controller->GetControlRotation().Yaw);
 }
 
 // Called to bind functionality to input
@@ -105,6 +102,7 @@ void ACharacterBase::SetStance()
 		isAttackStance = true;
 		bUseControllerRotationYaw = true;
 	}
+	bPlayerAttackStance.Broadcast(isAttackStance);
 
 }
 
@@ -133,17 +131,18 @@ void ACharacterBase::MoveForward(float AxisValue)
 		if (AxisValue > 0) // Forward movement
 		{
 			canSprint = true;
-			
-
+			if (!isSprinting) GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed; // ensure that forwards speed is correctly set in case it has been previously been reduced by walking backwards
 		}
 		else // Backward movement
 		{
-			canSprint = false;
-			GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed / 2;
+			canSprint = false; // cannot sprint backwards
+			GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed * BackwardsMotionMultiplier; // reduced speed when walking backwards
 		}
 		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f); // get yaw of the controller's rotation vector
 		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X); // get X from the rotation matrix of the 'YawRotation'
+		SetActorRotation(YawRotation);
 		AddMovementInput(DirectionToMove, AxisValue);
+		
 	}
 }
 
@@ -151,14 +150,16 @@ void ACharacterBase::MoveRight(float AxisValue)
 {
 	if (Controller && AxisValue != 0)
 	{
-		if (GetInputAxisValue(TEXT("MoveForward")) >= 0)
+		
+		if (GetInputAxisValue(TEXT("MoveForward")) >= 0) // If movement direction is not backwards
 		{
 			GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed;
 		}
 		
-		canSprint = false;
+		canSprint = false; // player cannot sprint when strafing
 		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f); // get yaw of the controller's rotation vector
 		const FVector DirectionToMove = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y); // get Y from the rotation matrix of the 'YawRotation'
+		SetActorRotation(YawRotation); // reset actor's rotation to match the current control (yaw) rotation (important for maintaining back and side movement)
 		AddMovementInput(DirectionToMove, AxisValue);
 	}
 }
