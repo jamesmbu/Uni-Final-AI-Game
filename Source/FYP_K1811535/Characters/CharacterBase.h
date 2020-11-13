@@ -56,19 +56,20 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health", meta = (AllowPrivateAccess = "true"))
 	class UHealthComponent* HealthComponent;
 
-	// Movement
-		// Movement speed when jogging
+	/*~~~~~~~~~~  Move & Look Adjustment Variables  ~~~~~~~~~~*/
+	// Movement speed when jogging
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move & Look Variables")
 	float BaseJogSpeed = 400.f;
-		// How much faster the player goes when sprinting
+	// How much faster the player goes when sprinting
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move & Look Variables")
 	float SprintMultiplier = 1.5f;
-		// How much slower the player goes when in backwards motion
+	// How much slower the player goes when in backwards motion
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move & Look Variables")
 	float BackwardsMotionMultiplier = 0.6f;
-		// For gamepad analogue stick aiming- rate at which rotation will occur
+	// For gamepad analogue stick aiming- rate at which rotation will occur
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move & Look Variables")
-	float RotationRate = 70.f; 
+	float RotationRate = 70.f;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
