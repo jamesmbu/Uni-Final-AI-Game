@@ -3,7 +3,6 @@
 
 #include "CharacterBase.h"
 
-#include "EditorCategoryUtils.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "FYP_K1811535/HealthComponent.h"
@@ -37,7 +36,7 @@ ACharacterBase::ACharacterBase()
 
 	// __________________________________________________________________________
 	
-	// Make controller rotation effect the character's rotation
+	// Make controller rotation not effect the character's rotation
 	bUseControllerRotationYaw = false;
 
 	// Set character to move in direction of input
