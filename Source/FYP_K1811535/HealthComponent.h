@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
 	float DamageCushioning; // damage reduction
 
+	void DecrementHealth(float Amount);
+	void HandleDeath();
+	
 	/* STAMINA */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Stamina")
 	float MaxStamina; // maximum health value

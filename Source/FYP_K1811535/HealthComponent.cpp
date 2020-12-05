@@ -21,6 +21,18 @@ UHealthComponent::UHealthComponent()
 	// ...
 }
 
+void UHealthComponent::DecrementHealth(float Amount)
+{
+	if (ActiveHealth - Amount <= 0.f)
+		HandleDeath();
+	else
+		ActiveHealth -= Amount;
+}
+
+void UHealthComponent::HandleDeath()
+{
+}
+
 
 // Called when the game starts
 void UHealthComponent::BeginPlay()

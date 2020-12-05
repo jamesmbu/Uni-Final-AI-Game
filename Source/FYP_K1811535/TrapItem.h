@@ -17,6 +17,9 @@ public:
 	// Constructor
 	ATrapItem();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage");
+	float Damage;
+	
 	// Overlap event overrides
 	
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
