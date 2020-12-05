@@ -9,6 +9,8 @@
 class USphereComponent;
 class UStaticMeshComponent;
 class UParticleSystemComponent;
+class UParticleSystem;
+
 UCLASS()
 class FYP_K1811535_API AItem : public AActor
 {
@@ -30,6 +32,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Particles")
 	UParticleSystemComponent* IdleParticleSystemComponent;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Particles")
+	UParticleSystem* OverlapParticles;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

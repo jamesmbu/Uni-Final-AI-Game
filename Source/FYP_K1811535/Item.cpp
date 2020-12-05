@@ -3,6 +3,9 @@
 
 #include "Item.h"
 #include "Components/SphereComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 
 // Sets default values
 AItem::AItem()
@@ -17,7 +20,7 @@ AItem::AItem()
 	Mesh->SetupAttachment(GetRootComponent());
 
 	IdleParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("IdleParticlesComponent"));
-	
+	IdleParticleSystemComponent->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +42,12 @@ void AItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("In"));
+
+	if(OverlapParticles)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), OverlapParticles, GetActorLocation(), FRotator(0.f), true);
+	}
+	Destroy();
 }
 
 void AItem::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

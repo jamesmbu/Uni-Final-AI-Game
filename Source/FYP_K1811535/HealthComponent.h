@@ -1,5 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+/*
+ *
+ *	A custom component which gives health and stamina functionality
+ * 
+ */
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,18 +19,29 @@ class FYP_K1811535_API UHealthComponent : public UActorComponent
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(EditAnywhere)
-	float MaxHealth = 100.f; // maximum health value
-	UPROPERTY(VisibleAnywhere)
-	float ActiveHealth = 0.f; // current health
-	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
-	float DamageCushioning = 0.f; // damage reduction
+	
+	
+	/* GAME MODE REFERENCE */
 	AFYP_K1811535GameModeBase* GameModeReference;
 public:	
 	// Sets default values for this component's properties
 	UHealthComponent();
 
-protected:
+	/* HEALTH */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+	float MaxHealth; // maximum health value
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float ActiveHealth; // current health
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
+	float DamageCushioning; // damage reduction
+
+	/* STAMINA */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Stamina")
+	float MaxStamina; // maximum health value
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stamina")
+	float ActiveStamina; // current health
+
+	protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	// Taking damage

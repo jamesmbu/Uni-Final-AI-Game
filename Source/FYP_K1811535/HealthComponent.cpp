@@ -11,7 +11,13 @@ UHealthComponent::UHealthComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
+	MaxHealth = 100.f;
+	ActiveHealth = MaxHealth;
+	DamageCushioning = 0.f;
 
+	MaxStamina = 100.f;
+	ActiveStamina = MaxStamina;
+	
 	// ...
 }
 
@@ -20,7 +26,7 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	ActiveHealth = MaxHealth;
+	
 	GameModeReference = Cast<AFYP_K1811535GameModeBase>(UGameplayStatics::GetGameMode(GetWorld())); // find the currently active game mode
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::TakeDamage); // when the owning actor calls OnTakeAnyDamage, the dynamic delegate will be called from this class using TakeDamage
 	
