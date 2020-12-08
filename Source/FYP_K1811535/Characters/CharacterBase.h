@@ -5,8 +5,16 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
+UENUM(BlueprintType)
+enum class EMovementStatus : uint8
+{
+	Ems_Normal UMETA(DisplayName = "Normal"),
+	Ems_Sprinting UMETA(DisplayName = "Sprinting"),
+	Ems_Max UMETA(DisplayName = "LastEnum"),
+};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeStance, bool, bInAttackStance);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSprint, bool, bIsSprinting);
 
 class UHealthComponent;
 
@@ -26,11 +34,15 @@ public:
 	bool isAttackStance;
 	UPROPERTY(BlueprintAssignable, Category = "EventDispatchers")
 	FOnChangeStance bPlayerAttackStance;
-
+	UPROPERTY(BlueprintAssignable, Category = "EventDispatchers")
+	FOnSprint bPlayerSprinting;
+	
 	// Sprinting
 	void SprintBegin();
 	void SprintEnd();
 	bool canSprint;
+	UPROPERTY(BlueprintReadOnly)
+	bool canSprintStamina;
 	bool isSprinting;
 
 	// Movement & Looking

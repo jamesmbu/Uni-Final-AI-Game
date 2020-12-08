@@ -16,6 +16,7 @@ ACharacterBase::ACharacterBase()
 	isAttackStance = false;
 	isSprinting = false;
 	canSprint = false;
+	canSprintStamina = true;
 	/*__________________________________________________________________________
 	 * Create Components
 	 */
@@ -44,6 +45,7 @@ ACharacterBase::ACharacterBase()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.2f;
+
 }
 
 // Called when the game starts or when spawned
@@ -107,10 +109,11 @@ void ACharacterBase::SetStance()
 
 void ACharacterBase::SprintBegin()
 {
-	if (canSprint)
+	if (canSprint && canSprintStamina)
 	{
 		isSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed * SprintMultiplier;
+		bPlayerSprinting.Broadcast(isSprinting);
 	}
 }
 
@@ -120,6 +123,7 @@ void ACharacterBase::SprintEnd()
 	{
 		isSprinting = false;
 		GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed / SprintMultiplier;
+		bPlayerSprinting.Broadcast(isSprinting);
 	}
 }
 
@@ -130,7 +134,7 @@ void ACharacterBase::MoveForward(float AxisValue)
 		if (AxisValue > 0) // Forward movement
 		{
 			canSprint = true;
-			if (!isSprinting) GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed; // ensure that forwards speed is correctly set in case it has been previously been reduced by walking backwards
+			if (!isSprinting || !canSprintStamina) GetCharacterMovement()->MaxWalkSpeed = BaseJogSpeed; // ensure that forwards speed is correctly set in case it has been previously been reduced by walking backwards
 		}
 		else // Backward movement
 		{
