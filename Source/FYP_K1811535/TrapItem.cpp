@@ -20,6 +20,7 @@ void ATrapItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 		if (Player)
 		{
 			Player->HealthComponent->DecrementHealth(Damage);
+			Destroy();
 		}
 	}
 

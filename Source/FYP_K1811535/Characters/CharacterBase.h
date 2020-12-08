@@ -17,7 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeStance, bool, bInAttackStan
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSprint, bool, bIsSprinting);
 
 class UHealthComponent;
-
+class AWeapon;
 UCLASS()
 class FYP_K1811535_API ACharacterBase : public ACharacter
 {
@@ -53,8 +53,12 @@ public:
 	
 	void LookUpRate(float AxisValue);
 	void LookRightRate(float AxisValue);
-	
 
+	/* Weapon Equipping */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Items)
+		AWeapon* EquippedWeapon;
+
+	FORCEINLINE void SetEquippedWeapon(AWeapon* WeaponToSet) { EquippedWeapon = WeaponToSet; }
 	/*~~~~~~~~~~  Components  ~~~~~~~~~~*/
 	// Camera boom
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

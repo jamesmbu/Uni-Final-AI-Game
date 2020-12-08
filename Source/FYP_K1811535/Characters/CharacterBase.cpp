@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "FYP_K1811535/HealthComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -34,7 +35,7 @@ ACharacterBase::ACharacterBase()
 
 	// Create Health
 	HealthComponent=CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-
+	
 	// __________________________________________________________________________
 	
 	// Make controller rotation not effect the character's rotation
@@ -61,6 +62,7 @@ void ACharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	//UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), GetVelocity().Size()); //SPEED TEST
 	//UE_LOG(LogTemp, Warning, TEXT("Control Rotation Yaw: %f"), Controller->GetControlRotation().Yaw);
+	
 }
 
 // Called to bind functionality to input
