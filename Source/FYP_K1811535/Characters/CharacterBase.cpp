@@ -8,6 +8,7 @@
 #include "FYP_K1811535/HealthComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "FYP_K1811535/Weapon.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -85,11 +86,33 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis(TEXT("LookRightRate"), this, &ACharacterBase::LookRightRate);
 
 	// Action binding
+	PlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &ACharacterBase::InteractBegin);
+	PlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Released, this, &ACharacterBase::InteractEnd);
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacterBase::Jump);
 	PlayerInputComponent->BindAction(TEXT("Stance"), EInputEvent::IE_Pressed, this, &ACharacterBase::SetStance);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this, &ACharacterBase::SprintBegin);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this, &ACharacterBase::SprintEnd);
 }
+void ACharacterBase::InteractBegin()
+{
+	bInteractKeyDown = true;
+	if (ActiveOverlappingItem)
+	{
+		AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
+		if (Weapon)
+		{
+			Weapon->Equip(this);
+			SetActiveOverlappingItem(nullptr);
+		}
+	}
+}
+
+void ACharacterBase::InteractEnd()
+{
+	bInteractKeyDown = false;
+	
+}
+
 /*
  * Input
  */

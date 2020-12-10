@@ -18,6 +18,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSprint, bool, bIsSprinting);
 
 class UHealthComponent;
 class AWeapon;
+class AItem;
 UCLASS()
 class FYP_K1811535_API ACharacterBase : public ACharacter
 {
@@ -28,6 +29,10 @@ public:
 	ACharacterBase();
 
 	/*~~~~~~~~~~  Input-related functions  ~~~~~~~~~~*/
+	// Interaction
+	bool bInteractKeyDown;
+	void InteractBegin();
+	void InteractEnd();
 	// Player Stance
 	void SetStance();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -56,9 +61,13 @@ public:
 
 	/* Weapon Equipping */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Items)
-		AWeapon* EquippedWeapon;
+	AWeapon* EquippedWeapon;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items)
+	AItem* ActiveOverlappingItem;
+	
 	FORCEINLINE void SetEquippedWeapon(AWeapon* WeaponToSet) { EquippedWeapon = WeaponToSet; }
+	FORCEINLINE void SetActiveOverlappingItem(AItem* Item) { ActiveOverlappingItem = Item; }
 	/*~~~~~~~~~~  Components  ~~~~~~~~~~*/
 	// Camera boom
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

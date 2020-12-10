@@ -2,13 +2,17 @@
 
 
 #include "Weapon.h"
-#include "DefaultPlayerCharacter.h"
+#include "Characters/CharacterBase.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AWeapon::AWeapon()
 {
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
 	SkeletalMesh->SetupAttachment(GetRootComponent());
+	bWeaponParticle = false;
 }
 
 void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -17,10 +21,11 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 	Super::OnOverlapBegin(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	if (OtherActor)
 	{
-		ADefaultPlayerCharacter* _character = Cast<ADefaultPlayerCharacter>(OtherActor);
+		ACharacterBase* _character = Cast<ACharacterBase>(OtherActor);
 		if (_character)
 		{
-			Equip(_character);
+			//Equip(_character);
+			_character->SetActiveOverlappingItem(this);
 		}
 	}
 }
@@ -28,10 +33,18 @@ void AWeapon::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	int32 OtherBodyIndex)
 {
 	Super::OnOverlapEnd(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
-
+	if (OtherActor)
+	{
+		ACharacterBase* _character = Cast<ACharacterBase>(OtherActor);
+		if (_character)
+		{
+			//Equip(_character);
+			_character->SetActiveOverlappingItem(nullptr);
+		}
+	}
 }
 
-void AWeapon::Equip(ADefaultPlayerCharacter* Character)
+void AWeapon::Equip(ACharacterBase* Character)
 {
 	if(Character)
 	{
@@ -46,7 +59,12 @@ void AWeapon::Equip(ADefaultPlayerCharacter* Character)
 		if (RightHandSocket)
 		{
 			RightHandSocket->AttachActor(this, Character->GetMesh());
+			Character->SetEquippedWeapon(this);
 		}
-		
+		if (OnEquipSound) UGameplayStatics::PlaySound2D(this, OnEquipSound);
+		if (!bWeaponParticle)
+		{
+			IdleParticleSystemComponent->Deactivate();
+		}
 	}
 }

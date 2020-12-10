@@ -11,6 +11,8 @@
  */
 class USkeletalMeshComponent;
 class ADefaultPlayerCharacter;
+class ACharacterBase;
+class USoundCue;
 UCLASS()
 class FYP_K1811535_API AWeapon : public AItem
 {
@@ -18,6 +20,12 @@ class FYP_K1811535_API AWeapon : public AItem
 public:
 	AWeapon();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Particles")
+	bool bWeaponParticle;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Sound")
+	class USoundCue* OnEquipSound;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SkeletalMesh")
 	USkeletalMeshComponent* SkeletalMesh;
 
@@ -28,5 +36,5 @@ public:
 		virtual void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
-	void Equip(ADefaultPlayerCharacter* Character);
+	void Equip(ACharacterBase* Character);
 };
