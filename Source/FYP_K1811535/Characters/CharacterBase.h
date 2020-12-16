@@ -66,7 +66,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items)
 	AItem* ActiveOverlappingItem;
 	
-	FORCEINLINE void SetEquippedWeapon(AWeapon* WeaponToSet) { EquippedWeapon = WeaponToSet; }
+	void SetEquippedWeapon(AWeapon* WeaponToSet);
 	FORCEINLINE void SetActiveOverlappingItem(AItem* Item) { ActiveOverlappingItem = Item; }
 	/*~~~~~~~~~~  Components  ~~~~~~~~~~*/
 	// Camera boom
