@@ -12,6 +12,8 @@ AEnemy::AEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
+	bOverlappingCombatSphere = false;
+	
 	DetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DetectionSphere"));
 	DetectionSphere->SetupAttachment(GetRootComponent());
 	DetectionSphere->InitSphereRadius(600.f);
@@ -63,6 +65,20 @@ void AEnemy::DetectionSphereOnOverlapBegin(UPrimitiveComponent* OverlappedCompon
 
 void AEnemy::DetectionSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if (OtherActor)
+	{
+		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
+		{
+			if (Main)
+			{
+				SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Idle);
+				if (AIController)
+				{
+					AIController->StopMovement();
+				}
+			}
+		}
+	}
 }
 
 void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -73,6 +89,8 @@ void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 		{
 			if (Main)
 			{
+				CombatTarget = Main;
+				bOverlappingCombatSphere = true;
 				SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Attack);
 			}
 		}
@@ -87,8 +105,13 @@ void AEnemy::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, 
 		{
 			if (Main)
 			{
-				SetEnemyMovementStatus(EEnemyMovementStatus::EMS_MoveToTarget);
-				MoveToTarget(Main);
+				bOverlappingCombatSphere = false;
+				if (EnemyMovementStatus != EEnemyMovementStatus::EMS_Attack) // so movement is after the animation ends
+				{
+					MoveToTarget(Main);
+					CombatTarget = nullptr;
+				}
+				
 			}
 		}
 	}
