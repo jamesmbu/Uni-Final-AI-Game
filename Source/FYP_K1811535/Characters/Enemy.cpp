@@ -18,7 +18,7 @@ AEnemy::AEnemy()
 	
 	CombatSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CombatSphere"));
 	CombatSphere->SetupAttachment(GetRootComponent());
-	CombatSphere->InitSphereRadius(600.f);
+	CombatSphere->InitSphereRadius(150.f);
 }
 
 // Called when the game starts or when spawned
@@ -67,10 +67,31 @@ void AEnemy::DetectionSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponen
 
 void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor)
+	{
+		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
+		{
+			if (Main)
+			{
+				SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Attack);
+			}
+		}
+	}
 }
 
 void AEnemy::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if (OtherActor)
+	{
+		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
+		{
+			if (Main)
+			{
+				SetEnemyMovementStatus(EEnemyMovementStatus::EMS_MoveToTarget);
+				MoveToTarget(Main);
+			}
+		}
+	}
 }
 
 void AEnemy::MoveToTarget(ACharacterBase* Target)
@@ -81,7 +102,7 @@ void AEnemy::MoveToTarget(ACharacterBase* Target)
 	{
 		FAIMoveRequest MoveRequest;
 		MoveRequest.SetGoalActor(Target);
-		MoveRequest.SetAcceptanceRadius(25.0f);
+		MoveRequest.SetAcceptanceRadius(100.0f);
 
 		FNavPathSharedPtr NavPath;
 
