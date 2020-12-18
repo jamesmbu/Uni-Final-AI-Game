@@ -19,6 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSprint, bool, bIsSprinting);
 class UHealthComponent;
 class AWeapon;
 class AItem;
+class UAnimMontage;
 UCLASS()
 class FYP_K1811535_API ACharacterBase : public ACharacter
 {
@@ -33,6 +34,16 @@ public:
 	bool bInteractKeyDown;
 	void InteractBegin();
 	void InteractEnd();
+	// Main action (LMB)
+	void MainAction(); // left mouse button
+	void MainActionEnd();
+	void Attack();
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
+	bool bMainActionKeyDown;
+	// Animations
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
+	UAnimMontage* CombatMontage;
 	// Player Stance
 	void SetStance();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -59,6 +70,9 @@ public:
 	void LookUpRate(float AxisValue);
 	void LookRightRate(float AxisValue);
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anim")
+	bool bAttacking;
+	
 	/* Weapon Equipping */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Items)
 	AWeapon* EquippedWeapon;

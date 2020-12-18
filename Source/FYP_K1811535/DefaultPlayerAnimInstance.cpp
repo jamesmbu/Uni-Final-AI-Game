@@ -10,10 +10,10 @@ void UDefaultPlayerAnimInstance::NativeInitializeAnimation()
 	{
 		Pawn = TryGetPawnOwner();
 	}
-	ACharacterBase* owningCharacter = Cast<ACharacterBase>(Pawn);
-	if (owningCharacter)
+	OwningCharacter = Cast<ACharacterBase>(Pawn);
+	if (OwningCharacter)
 	{
-		owningCharacter->bPlayerAttackStance.AddDynamic(this, &UDefaultPlayerAnimInstance::OnPlayerSwitchStance);
+		OwningCharacter->bPlayerAttackStance.AddDynamic(this, &UDefaultPlayerAnimInstance::OnPlayerSwitchStance);
 	}
 }
 

@@ -37,6 +37,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	class APawn* Pawn;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	class ACharacterBase* OwningCharacter;
+	
 	UFUNCTION()
 	void OnPlayerSwitchStance(bool bInAttackStance_);
 	

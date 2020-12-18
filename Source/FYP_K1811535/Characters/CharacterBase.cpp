@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "FYP_K1811535/Weapon.h"
+#include "Animation/AnimInstance.h" 
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -92,6 +93,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Stance"), EInputEvent::IE_Pressed, this, &ACharacterBase::SetStance);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this, &ACharacterBase::SprintBegin);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this, &ACharacterBase::SprintEnd);
+	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &ACharacterBase::MainAction);
+	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Released, this, &ACharacterBase::MainActionEnd);
 }
 void ACharacterBase::InteractBegin()
 {
@@ -111,6 +114,44 @@ void ACharacterBase::InteractEnd()
 {
 	bInteractKeyDown = false;
 	
+}
+
+void ACharacterBase::MainAction()
+{
+	bMainActionKeyDown = true;
+	if (EquippedWeapon)
+	{
+		Attack();
+	}
+}
+
+void ACharacterBase::MainActionEnd()
+{
+	bMainActionKeyDown = false;
+}
+
+void ACharacterBase::Attack()
+{
+	if (!bAttacking)
+	{
+		bAttacking = true;
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && CombatMontage)
+		{
+			AnimInstance->Montage_Play(CombatMontage, 1.4f);
+			AnimInstance->Montage_JumpToSection(FName("Attack_1"), CombatMontage);
+		}
+	}
+	
+}
+
+void ACharacterBase::AttackEnd()
+{
+	bAttacking = false;
+	if (bMainActionKeyDown)
+	{
+		Attack();
+	}
 }
 
 /*
@@ -154,7 +195,7 @@ void ACharacterBase::SprintEnd()
 
 void ACharacterBase::MoveForward(float AxisValue)
 {
-	if (Controller && AxisValue != 0.f)
+	if (Controller && AxisValue != 0.f && !bAttacking)
 	{
 		if (AxisValue > 0) // Forward movement
 		{
@@ -176,7 +217,7 @@ void ACharacterBase::MoveForward(float AxisValue)
 
 void ACharacterBase::MoveRight(float AxisValue)
 {
-	if (Controller && AxisValue != 0)
+	if (Controller && AxisValue != 0 && !bAttacking)
 	{
 		
 		if (GetInputAxisValue(TEXT("MoveForward")) >= 0) // If movement direction is not backwards
