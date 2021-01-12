@@ -16,6 +16,8 @@ enum class EEnemyMovementStatus : uint8
 class USphereComponent;
 class AAIController;
 class ACharacterBase;
+class UHealthComponent;
+class UParticleSystem;
 UCLASS()
 class FYP_K1811535_API AEnemy : public ACharacter
 {
@@ -44,6 +46,16 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
 	ACharacterBase* CombatTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	UHealthComponent* HealthComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particles")
+	UParticleSystem* HitParticles;
+	
 	
 protected:
 	// Called when the game starts or when spawned

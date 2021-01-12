@@ -22,6 +22,8 @@ class USkeletalMeshComponent;
 class ADefaultPlayerCharacter;
 class ACharacterBase;
 class USoundCue;
+class UBoxComponent;
+
 UCLASS()
 class FYP_K1811535_API AWeapon : public AItem
 {
@@ -40,16 +42,33 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SkeletalMesh")
 	USkeletalMeshComponent* SkeletalMesh;
 
-		virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
-			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, 
-			const FHitResult& SweepResult) override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item | Combat")
+	UBoxComponent* CombatCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Combat")
+	float Damage;
 	
-		virtual void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
-			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, 
+		const FHitResult& SweepResult) override;
+	
+	virtual void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 	void Equip(ACharacterBase* Character);
 
 	FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; }
 	FORCEINLINE EWeaponState GetWeaponState() { return WeaponState; }
+
+	UFUNCTION()
+	void CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+		const FHitResult& SweepResult);
+	UFUNCTION()
+	void CombatOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
+protected:
+	virtual void BeginPlay() override;
 };
+

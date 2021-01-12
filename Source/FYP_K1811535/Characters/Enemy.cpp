@@ -6,6 +6,8 @@
 #include "AIController.h"
 #include "CharacterBase.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "FYP_K1811535/HealthComponent.h"
+
 // Sets default values
 AEnemy::AEnemy()
 {
@@ -21,6 +23,11 @@ AEnemy::AEnemy()
 	CombatSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CombatSphere"));
 	CombatSphere->SetupAttachment(GetRootComponent());
 	CombatSphere->InitSphereRadius(150.f);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
+	Damage = 25.f;
+	
 }
 
 // Called when the game starts or when spawned

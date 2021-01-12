@@ -138,8 +138,24 @@ void ACharacterBase::Attack()
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (AnimInstance && CombatMontage)
 		{
-			AnimInstance->Montage_Play(CombatMontage, 1.4f);
-			AnimInstance->Montage_JumpToSection(FName("Attack_1"), CombatMontage);
+			FName SectionName;
+			float AnimationTimeMult = 1.0f;
+			int32 Section = FMath::RandRange(0, 1);
+			switch (Section)
+			{
+			case 0:
+				SectionName = FName("Attack_1");
+				AnimationTimeMult = 1.4f;
+				break;
+			case 1:
+				SectionName = FName("Attack_2");
+				AnimationTimeMult = 1.4f;
+				break;
+			default:
+				;
+			}
+			AnimInstance->Montage_Play(CombatMontage, AnimationTimeMult);
+			AnimInstance->Montage_JumpToSection(SectionName, CombatMontage);
 		}
 	}
 	
