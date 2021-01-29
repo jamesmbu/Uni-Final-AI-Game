@@ -12,6 +12,7 @@
 #include "Animation/AnimInstance.h"
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -78,6 +79,37 @@ void AEnemy::AttackEnd()
 		float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
 		GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
 	}
+}
+
+float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	HealthComponent->DecrementHealth(DamageAmount);
+	if (HealthComponent->ActiveHealth <= 0)
+	{
+		Die();
+	}
+	return DamageAmount;
+}
+
+void AEnemy::Die()
+{
+	/* Play the death animation */
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && CombatMontage)
+	{
+		AnimInstance->Montage_Play(CombatMontage, 1.f);
+		AnimInstance->Montage_JumpToSection("Death");
+	}
+	SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Dead);
+
+	/* Remove any associated collision  */
+	CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	DetectionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CombatSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+
 }
 
 // Called when the game starts or when spawned

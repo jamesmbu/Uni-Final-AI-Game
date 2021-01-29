@@ -32,27 +32,27 @@ public:
 	AWeapon();
 
 	EWeaponState WeaponState;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Particles")
-	bool bWeaponParticle;
-	
+		bool bWeaponParticle;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Sound")
-	class USoundCue* OnEquipSound;
-	
+		class USoundCue* OnEquipSound;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SkeletalMesh")
-	USkeletalMeshComponent* SkeletalMesh;
+		USkeletalMeshComponent* SkeletalMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item | Combat")
-	UBoxComponent* CombatCollision;
+		UBoxComponent* CombatCollision;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Combat")
-	float Damage;
-	
-	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, 
+		float Damage;
+
+	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 		const FHitResult& SweepResult) override;
-	
-	virtual void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
+
+	virtual void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 	void Equip(ACharacterBase* Character);
@@ -61,18 +61,29 @@ public:
 	FORCEINLINE EWeaponState GetWeaponState() { return WeaponState; }
 
 	UFUNCTION()
-	void CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-		const FHitResult& SweepResult);
+		void CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+			const FHitResult& SweepResult);
 	UFUNCTION()
-	void CombatOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		void CombatOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION(BlueprintCallable)
 	void ActivateCollision();
 
 	UFUNCTION(BlueprintCallable)
 	void DeactivateCollision();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+		TSubclassOf<UDamageType> DamageTypeClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+		AController* WeaponInstigator;
+
+	FORCEINLINE void SetInstigator(AController* Inst) { WeaponInstigator = Inst; }
+
+
+	
 protected:
 	virtual void BeginPlay() override;
 };

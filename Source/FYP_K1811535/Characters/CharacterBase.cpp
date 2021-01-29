@@ -273,6 +273,15 @@ float ACharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	AActor* DamageCauser)
 {
 	HealthComponent->DecrementHealth(DamageAmount);
+	if (HealthComponent->ActiveHealth <= 0.f)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && CombatMontage)
+		{
+			AnimInstance->Montage_Play(CombatMontage, 1.f);
+			AnimInstance->Montage_JumpToSection("Death");
+		}
+	}
 	return DamageAmount;
 }
 

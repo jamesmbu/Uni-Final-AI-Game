@@ -70,6 +70,8 @@ void AWeapon::Equip(ACharacterBase* Character)
 {
 	if(Character)
 	{
+		SetInstigator(Character->GetController());
+		
 		SkeletalMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera,
 			ECollisionResponse::ECR_Ignore);
 		SkeletalMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn,
@@ -108,6 +110,10 @@ void AWeapon::CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 					FVector SocketLocation = WeaponSocket->GetSocketLocation(SkeletalMesh);
 					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Enemy->HitParticles, GetActorLocation(), FRotator(0.f), false);
 				}
+			}
+			if (DamageTypeClass)
+			{
+				UGameplayStatics::ApplyDamage(Enemy, Damage, WeaponInstigator, this, DamageTypeClass);
 			}
 		}
 	}
