@@ -269,6 +269,13 @@ void ACharacterBase::LookRightRate(float AxisValue)
 	AddControllerYawInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds());
 }
 
+float ACharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	HealthComponent->DecrementHealth(DamageAmount);
+	return DamageAmount;
+}
+
 void ACharacterBase::SetEquippedWeapon(AWeapon* WeaponToSet)
 {
 	if (EquippedWeapon)

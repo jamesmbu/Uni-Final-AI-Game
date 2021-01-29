@@ -33,7 +33,11 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::DecrementHealth(float Amount)
 {
 	if (ActiveHealth - Amount <= 0.f)
+	{
+		ActiveHealth = 0.f;
 		HandleDeath();
+	}
+		
 	else
 		ActiveHealth -= Amount;
 }

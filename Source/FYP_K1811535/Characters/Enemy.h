@@ -18,6 +18,11 @@ class AAIController;
 class ACharacterBase;
 class UHealthComponent;
 class UParticleSystem;
+class AWeapon;
+class AItem;
+class UBoxComponent;
+class UAnimMontage;
+
 UCLASS()
 class FYP_K1811535_API AEnemy : public ACharacter
 {
@@ -55,7 +60,31 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particles")
 	UParticleSystem* HitParticles;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+	bool bWeaponEquipped;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Items)
+	AWeapon* EquippedWeapon;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items)
+	AItem* ActiveOverlappingItem;
+
+	UPROPERTY(Visibleanywhere, BlueprintReadWrite, Category = "Combat")
+	UBoxComponent* CombatCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	UAnimMontage* CombatMontage;
+
+	FTimerHandle AttackTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float AttackMinTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float AttackMaxTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	TSubclassOf<UDamageType> DamageTypeClass;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -84,10 +113,32 @@ public:
 	virtual void CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+		virtual void CombatObjectOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		virtual void CombatObjectOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
+	
 	UFUNCTION(BlueprintCallable)
 	void MoveToTarget(ACharacterBase* Target);
 
+	UFUNCTION(BlueprintCallable)
+	void ActivateCollision();
 	
+	UFUNCTION(BlueprintCallable)
+	void DeactivateCollision();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	bool bAttacking;
+
+	void Attack();
+	
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
+
 	
 	
 };

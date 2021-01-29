@@ -72,7 +72,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anim")
 	bool bAttacking;
-	
+	/* Damage */
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	/* Weapon Equipping */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Items)
 	AWeapon* EquippedWeapon;
