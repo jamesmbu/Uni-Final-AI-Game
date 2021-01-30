@@ -38,7 +38,10 @@ AEnemy::AEnemy()
 	AttackMinTime = 0.5f;
 	AttackMaxTime = 3.5f;
 	Damage = 25.f;
-	
+
+	EnemyMovementStatus = EEnemyMovementStatus::EMS_Idle;
+
+	DeathDelay = 0.6f;
 }
 
 void AEnemy::ActivateCollision()
@@ -53,22 +56,26 @@ void AEnemy::DeactivateCollision()
 
 void AEnemy::Attack()
 {
-	if (AIController)
+	if (Alive())
 	{
-		AIController->StopMovement();
-		SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Attack);
-	}
-	if (!bAttacking)
-	{
-		bAttacking = true;
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if (AnimInstance)
+		if (AIController)
 		{
-			AnimInstance->Montage_Play(CombatMontage, 1.f);
-			AnimInstance->Montage_JumpToSection(FName("Attack"), CombatMontage);
-			UE_LOG(LogTemp, Warning, TEXT("Attacking"));
+			AIController->StopMovement();
+			SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Attack);
+		}
+		if (!bAttacking)
+		{
+			bAttacking = true;
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			if (AnimInstance)
+			{
+				AnimInstance->Montage_Play(CombatMontage, 1.f);
+				AnimInstance->Montage_JumpToSection(FName("Attack"), CombatMontage);
+				UE_LOG(LogTemp, Warning, TEXT("Attacking"));
+			}
 		}
 	}
+	
 }
 
 void AEnemy::AttackEnd()
@@ -109,7 +116,23 @@ void AEnemy::Die()
 	CombatSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+}
 
+void AEnemy::DeathEnd()
+{
+	GetMesh()->bPauseAnims = true;
+	//GetMesh()->bNoSkeletonUpdate = true;
+	GetWorldTimerManager().SetTimer(DeathTimer, this, &AEnemy::Vanish, DeathDelay);
+}
+
+bool AEnemy::Alive()
+{
+	return GetEnemyMovementStatus() != EEnemyMovementStatus::EMS_Dead;
+}
+
+void AEnemy::Vanish()
+{
+	Destroy();
 }
 
 // Called when the game starts or when spawned
@@ -147,7 +170,7 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AEnemy::DetectionSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	if (OtherActor && Alive())
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
 		if (Main)
@@ -160,7 +183,7 @@ void AEnemy::DetectionSphereOnOverlapBegin(UPrimitiveComponent* OverlappedCompon
 
 void AEnemy::DetectionSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor)
+	if (OtherActor && Alive())
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
 		{
@@ -178,7 +201,7 @@ void AEnemy::DetectionSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponen
 
 void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	if (OtherActor && Alive())
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
 		{
@@ -195,7 +218,7 @@ void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 
 void AEnemy::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor)
+	if (OtherActor && Alive())
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
 		{
@@ -239,7 +262,6 @@ void AEnemy::CombatObjectOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, 
 void AEnemy::MoveToTarget(ACharacterBase* Target)
 {
 	SetEnemyMovementStatus(EEnemyMovementStatus::EMS_MoveToTarget);
-
 	if (AIController)
 	{
 		FAIMoveRequest MoveRequest;
