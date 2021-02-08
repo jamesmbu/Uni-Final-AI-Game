@@ -20,6 +20,8 @@ class UHealthComponent;
 class AWeapon;
 class AItem;
 class UAnimMontage;
+class AEnemy;
+class AMainPlayerController;
 UCLASS()
 class FYP_K1811535_API ACharacterBase : public ACharacter
 {
@@ -29,6 +31,20 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	AEnemy* CombatTarget;
+	
+	FORCEINLINE void SetCombatTarget(AEnemy* Target) { CombatTarget = Target; }
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	bool bHasCombatTarget;
+
+	FORCEINLINE void SetHasCombatTarget(bool HasTarget) { bHasCombatTarget = HasTarget; } 
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Combat")
+	FVector CombatTargetLocation;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Controller")
+	AMainPlayerController* MainPlayerController;
 	/*~~~~~~~~~~  Input-related functions  ~~~~~~~~~~*/
 	// Interaction
 	bool bInteractKeyDown;

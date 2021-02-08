@@ -10,6 +10,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "FYP_K1811535/Weapon.h"
 #include "Animation/AnimInstance.h" 
+#include "FYP_K1811535/MainPlayerController.h"
+#include "FYP_K1811535/Characters/Enemy.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -49,13 +51,14 @@ ACharacterBase::ACharacterBase()
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
+	bHasCombatTarget = false;
 }
 
 // Called when the game starts or when spawned
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	MainPlayerController = Cast<AMainPlayerController>(GetController());
 }
 
 // Called every frame
@@ -64,7 +67,14 @@ void ACharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	//UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), GetVelocity().Size()); //SPEED TEST
 	//UE_LOG(LogTemp, Warning, TEXT("Control Rotation Yaw: %f"), Controller->GetControlRotation().Yaw);
-	
+	if (CombatTarget)
+	{
+		CombatTargetLocation = CombatTarget->GetActorLocation();
+		if (MainPlayerController)
+		{
+			MainPlayerController->EnemyLocation = CombatTargetLocation;
+		}
+	}
 }
 
 // Called to bind functionality to input

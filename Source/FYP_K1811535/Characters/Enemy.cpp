@@ -13,7 +13,7 @@
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
-
+#include "FYP_K1811535/MainPlayerController.h"
 // Sets default values
 AEnemy::AEnemy()
 {
@@ -86,6 +86,15 @@ void AEnemy::AttackEnd()
 		float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
 		GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
 	}
+	/*else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("A"));
+		if (CombatTarget)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("A"));
+			MoveToTarget(CombatTarget);
+		}
+	}*/
 }
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -170,25 +179,33 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AEnemy::DetectionSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && Alive())
+	if (OtherActor)
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
 		if (Main)
 		{
 			MoveToTarget(Main);
-			
 		}
 	}
 }
 
 void AEnemy::DetectionSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && Alive())
+	if (OtherActor)
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
 		{
 			if (Main)
 			{
+				if (Main->CombatTarget == this)
+				{
+					Main->SetCombatTarget(nullptr);
+				}
+				Main->SetHasCombatTarget(false);
+				if (Main->MainPlayerController)
+				{
+					Main->MainPlayerController->RemoveEnemyHealthBar();
+				}
 				SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Idle);
 				if (AIController)
 				{
@@ -207,10 +224,18 @@ void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 		{
 			if (Main)
 			{
+				Main->SetCombatTarget(this);
+				Main->SetHasCombatTarget(true);
+				if (Main->MainPlayerController)
+				{
+					Main->MainPlayerController->DisplayEnemyHealthBar();
+				}
 				CombatTarget = Main;
 				bOverlappingCombatSphere = true;
 				//SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Attack);
-				Attack();
+				float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
+				GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
+				//Attack();
 			}
 		}
 	}
@@ -218,7 +243,7 @@ void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 
 void AEnemy::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && Alive())
+	if (OtherActor)
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
 		{
@@ -231,8 +256,6 @@ void AEnemy::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, 
 					CombatTarget = nullptr;
 				}
 				GetWorldTimerManager().ClearTimer(AttackTimer);
-
-				
 			}
 		}
 	}
@@ -264,6 +287,7 @@ void AEnemy::MoveToTarget(ACharacterBase* Target)
 	SetEnemyMovementStatus(EEnemyMovementStatus::EMS_MoveToTarget);
 	if (AIController)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Aarrr"));
 		FAIMoveRequest MoveRequest;
 		MoveRequest.SetGoalActor(Target);
 		MoveRequest.SetAcceptanceRadius(100.0f);
