@@ -155,11 +155,11 @@ void ACharacterBase::Attack()
 			{
 			case 0:
 				SectionName = FName("Attack_1");
-				AnimationTimeMult = 1.4f;
+				AnimationTimeMult = 2.4f;
 				break;
 			case 1:
 				SectionName = FName("Attack_2");
-				AnimationTimeMult = 1.4f;
+				AnimationTimeMult = 2.4f;
 				break;
 			default:
 				;

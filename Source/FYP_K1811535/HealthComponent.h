@@ -37,7 +37,7 @@ public:
 	UHealthComponent();
 
 	/* HEALTH */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth; // maximum health value
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float ActiveHealth; // current health

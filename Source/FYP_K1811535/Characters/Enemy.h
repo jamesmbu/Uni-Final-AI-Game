@@ -95,7 +95,8 @@ public:
 	float DeathDelay;
 
 	void Vanish();
-	
+
+	void DelayedMovement(ACharacterBase* Target);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -71,7 +71,7 @@ void AEnemy::Attack()
 			{
 				AnimInstance->Montage_Play(CombatMontage, 1.f);
 				AnimInstance->Montage_JumpToSection(FName("Attack"), CombatMontage);
-				UE_LOG(LogTemp, Warning, TEXT("Attacking"));
+				
 			}
 		}
 	}
@@ -86,15 +86,23 @@ void AEnemy::AttackEnd()
 		float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
 		GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
 	}
-	/*else
+	else if (!bOverlappingCombatSphere)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("A"));
 		if (CombatTarget)
 		{
+			
 			UE_LOG(LogTemp, Warning, TEXT("A"));
 			MoveToTarget(CombatTarget);
+			GetWorldTimerManager().ClearTimer(AttackTimer);
+			CombatTarget = nullptr;
 		}
-	}*/
+		/*if (EnemyMovementStatus == EEnemyMovementStatus::EMS_Attack) // so movement is after the animation ends
+				{
+					MoveToTarget(Main);
+					CombatTarget = nullptr;
+				}*/
+	}
 }
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -142,6 +150,12 @@ bool AEnemy::Alive()
 void AEnemy::Vanish()
 {
 	Destroy();
+}
+
+// meant to be called with a timer
+void AEnemy::DelayedMovement(ACharacterBase* Target) 
+{
+	MoveToTarget(Target);
 }
 
 // Called when the game starts or when spawned
@@ -234,8 +248,8 @@ void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 				bOverlappingCombatSphere = true;
 				//SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Attack);
 				float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
-				GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
-				//Attack();
+				GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, 0.8);
+				
 			}
 		}
 	}
@@ -250,12 +264,17 @@ void AEnemy::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, 
 			if (Main)
 			{
 				bOverlappingCombatSphere = false;
-				if (EnemyMovementStatus != EEnemyMovementStatus::EMS_Attack) // so movement is after the animation ends
+				/*if (EnemyMovementStatus == EEnemyMovementStatus::EMS_Attack) // so movement is after the animation ends
 				{
 					MoveToTarget(Main);
 					CombatTarget = nullptr;
+				}*/
+				if (!bAttacking)
+				{
+					GetWorldTimerManager().ClearTimer(AttackTimer);
+					
+					MoveToTarget(Main);
 				}
-				GetWorldTimerManager().ClearTimer(AttackTimer);
 			}
 		}
 	}
