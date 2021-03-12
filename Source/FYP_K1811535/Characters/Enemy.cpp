@@ -56,6 +56,7 @@ void AEnemy::DeactivateCollision()
 
 void AEnemy::Attack()
 {
+	
 	if (Alive())
 	{
 		if (AIController)
@@ -78,6 +79,35 @@ void AEnemy::Attack()
 	
 }
 
+void AEnemy::Melee(AActor* OtherActor)
+{
+	HasBT = true;
+	UE_LOG(LogTemp, Warning, TEXT("OOO"));
+	if (Alive())
+	{
+		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
+		{
+			if (Main)
+			{
+				Main->SetCombatTarget(this);
+				Main->SetHasCombatTarget(true);
+				if (Main->MainPlayerController)
+				{
+					Main->MainPlayerController->DisplayEnemyHealthBar();
+				}
+				CombatTarget = Main;
+				//bOverlappingCombatSphere = true;
+				
+				//SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Attack);
+				//float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
+				//GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, 0.8);
+				Attack();
+
+			}
+		}
+	}
+}
+
 void AEnemy::AttackEnd()
 {
 	bAttacking = false;
@@ -89,7 +119,7 @@ void AEnemy::AttackEnd()
 	else if (!bOverlappingCombatSphere)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("A"));
-		if (CombatTarget)
+		if (CombatTarget && !HasBT)
 		{
 			
 			UE_LOG(LogTemp, Warning, TEXT("A"));

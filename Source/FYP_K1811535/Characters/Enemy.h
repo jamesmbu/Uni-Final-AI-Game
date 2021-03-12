@@ -144,9 +144,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	bool bAttacking;
-
-	void Attack();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool HasBT;
 	
+	void Attack();
+	void Melee(AActor* OtherActor); // custom for use from behaviour tree task
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 

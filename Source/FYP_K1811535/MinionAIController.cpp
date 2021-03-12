@@ -4,6 +4,7 @@
 #include "MinionAIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Characters/CharacterBase.h"
 
 void AMinionAIController::BeginPlay()
 {
@@ -11,6 +12,11 @@ void AMinionAIController::BeginPlay()
 	if (AIBehaviorTree)
 	{
 		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+		ACharacterBase* Main = Cast<ACharacterBase>(PlayerPawn);
+		if (Main)
+		{
+			UE_LOG(LogTemp,Warning,TEXT("is character"))
+		}
 		RunBehaviorTree(AIBehaviorTree);
 		GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
 		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
