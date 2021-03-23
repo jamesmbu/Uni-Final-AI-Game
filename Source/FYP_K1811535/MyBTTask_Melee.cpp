@@ -24,14 +24,17 @@ EBTNodeResult::Type UMyBTTask_Melee::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 	{
 		return EBTNodeResult::Failed;
 	}
-
+	// Get Pawn reference to this enemy character
 	AEnemy* Character = Cast<AEnemy>(OwnerComp.GetAIOwner()->GetPawn());
 	if (Character == nullptr)
 	{
 		return EBTNodeResult::Failed;
 	}
 
+	// Get Pawn reference to the player
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
+	// Initiate melee attack from the enemy character to the player
 	Character->Melee(PlayerPawn);
 
 	return EBTNodeResult::Succeeded;

@@ -12,10 +12,10 @@ void AMinionAIController::BeginPlay()
 	if (AIBehaviorTree)
 	{
 		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-		ACharacterBase* Main = Cast<ACharacterBase>(PlayerPawn);
+		//ACharacterBase* Main = Cast<ACharacterBase>(PlayerPawn);
 		
 		RunBehaviorTree(AIBehaviorTree);
-		//GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
+		
 		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
 		
 	}
