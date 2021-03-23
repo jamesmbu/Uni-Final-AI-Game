@@ -13,12 +13,9 @@ void AMinionAIController::BeginPlay()
 	{
 		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 		ACharacterBase* Main = Cast<ACharacterBase>(PlayerPawn);
-		if (Main)
-		{
-			UE_LOG(LogTemp,Warning,TEXT("is character"))
-		}
+		
 		RunBehaviorTree(AIBehaviorTree);
-		GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
+		//GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
 		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
 		
 	}
@@ -28,17 +25,7 @@ void AMinionAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-
-	if (LineOfSightTo(PlayerPawn))
-	{
-		GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
-		GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
-	}
-	else
-	{
-		GetBlackboardComponent()->ClearValue("PlayerLocation");
-	}
+	
 }
 
 
