@@ -15,6 +15,9 @@ class FYP_K1811535_API UMyBTTask_Melee : public UBTTaskNode
 	GENERATED_BODY()
 public:
 	UMyBTTask_Melee();
+
+	float AttackInterval;
+	FTimerHandle TimerHandle;
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

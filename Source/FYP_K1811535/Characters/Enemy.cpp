@@ -82,7 +82,6 @@ void AEnemy::Attack()
 void AEnemy::Melee(AActor* OtherActor)
 {
 	HasBT = true;
-	UE_LOG(LogTemp, Warning, TEXT("OOO"));
 	if (Alive())
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
@@ -96,11 +95,6 @@ void AEnemy::Melee(AActor* OtherActor)
 					Main->MainPlayerController->DisplayEnemyHealthBar();
 				}
 				CombatTarget = Main;
-				//bOverlappingCombatSphere = true;
-				
-				//SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Attack);
-				//float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
-				//GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, 0.8);
 				Attack();
 
 			}
@@ -111,18 +105,16 @@ void AEnemy::Melee(AActor* OtherActor)
 void AEnemy::AttackEnd()
 {
 	bAttacking = false;
+	
 	if (bOverlappingCombatSphere)
 	{
 		float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
 		GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
 	}
-	else if (!bOverlappingCombatSphere)
+	else if (!bOverlappingCombatSphere && !HasBT)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("A"));
-		if (CombatTarget && !HasBT)
+		if (CombatTarget)
 		{
-			
-			UE_LOG(LogTemp, Warning, TEXT("A"));
 			MoveToTarget(CombatTarget);
 			GetWorldTimerManager().ClearTimer(AttackTimer);
 			CombatTarget = nullptr;

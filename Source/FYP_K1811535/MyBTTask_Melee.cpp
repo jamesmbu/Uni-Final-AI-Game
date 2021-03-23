@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "FYP_K1811535/Characters/Enemy.h"
 #include "Kismet/GameplayStatics.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 UMyBTTask_Melee::UMyBTTask_Melee()
 {
@@ -14,18 +15,22 @@ UMyBTTask_Melee::UMyBTTask_Melee()
 EBTNodeResult::Type UMyBTTask_Melee::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
+
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool("IsAttacking", true);
 	
 	if (OwnerComp.GetAIOwner() == nullptr)
 	{
 		return EBTNodeResult::Failed;
 	}
+
 	AEnemy* Character = Cast<AEnemy>(OwnerComp.GetAIOwner()->GetPawn());
 	if (Character == nullptr)
 	{
 		return EBTNodeResult::Failed;
 	}
+
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	Character->Melee(PlayerPawn);
-	
+	GetWorld()->GetTimerManager()
 	return EBTNodeResult::Succeeded;
 }

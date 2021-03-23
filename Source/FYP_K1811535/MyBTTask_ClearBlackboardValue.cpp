@@ -3,6 +3,7 @@
 
 #include "MyBTTask_ClearBlackboardValue.h"
 #include "BehaviorTree/BlackboardComponent.h"
+
 UMyBTTask_ClearBlackboardValue::UMyBTTask_ClearBlackboardValue()
 {
 	NodeName = TEXT("ClearBlackBoardValue");
