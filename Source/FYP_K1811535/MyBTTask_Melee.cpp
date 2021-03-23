@@ -12,6 +12,8 @@ UMyBTTask_Melee::UMyBTTask_Melee()
 	NodeName = TEXT("Melee");
 }
 
+
+
 EBTNodeResult::Type UMyBTTask_Melee::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
@@ -31,6 +33,6 @@ EBTNodeResult::Type UMyBTTask_Melee::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	Character->Melee(PlayerPawn);
-	GetWorld()->GetTimerManager()
+
 	return EBTNodeResult::Succeeded;
 }
