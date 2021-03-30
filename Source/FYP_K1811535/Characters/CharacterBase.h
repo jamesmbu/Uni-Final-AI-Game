@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 UENUM(BlueprintType)
@@ -26,7 +27,7 @@ UCLASS()
 class FYP_K1811535_API ACharacterBase : public ACharacter
 {
 	GENERATED_BODY()
-
+	
 public:
 	// Sets default values for this character's properties
 	ACharacterBase();

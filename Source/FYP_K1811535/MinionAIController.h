@@ -26,6 +26,8 @@ public:
 	UFUNCTION()
 	void OnPawnDetected(const TArray<AActor*>& DetectedPawns); // When any pawn is detected by perception
 
+	
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	float AISightRadius = 500.0f; // Distance-based visibility
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
@@ -36,6 +38,10 @@ public:
 	float AIFieldOfView = 90.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	UAISenseConfig_Sight* SightConfig;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
+	bool bIsPlayerDetected = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
+	float DistanceToPlayer = 0.0f;
 	
 protected:
 	virtual void BeginPlay() override;

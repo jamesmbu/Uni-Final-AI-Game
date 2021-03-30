@@ -11,7 +11,7 @@
 AMinionAIController::AMinionAIController()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	AAIController::SetGenericTeamId(FGenericTeamId(1));
 	ConfigureAIPerception();
 	
 }
@@ -46,6 +46,7 @@ void AMinionAIController::ConfigureAIPerception()
 
 	AAIController::GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
 	AAIController::GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &AMinionAIController::OnPawnDetected);
+
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 }
 
@@ -53,7 +54,12 @@ void AMinionAIController::ConfigureAIPerception()
 void AMinionAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
+
+	if (DistanceToPlayer > AISightRadius)
+	{
+		bIsPlayerDetected = false;
+		GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), false);
+	}
 	
 }
 
@@ -73,7 +79,22 @@ void AMinionAIController::OnPossess(APawn* InPawn)
 
 void AMinionAIController::OnPawnDetected(const TArray<AActor*>& DetectedPawns)
 {
+	
+	for(int i = 0; i < DetectedPawns.Num(); i++)
+	{
+		ACharacterBase* Main = Cast<ACharacterBase>(DetectedPawns[i]);
+		if (Main)
+		{
+			DistanceToPlayer = GetPawn()->GetDistanceTo(DetectedPawns[i]);
+			bIsPlayerDetected = true;
+			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true);
+		}
+	}
+	
+	
 }
+
+
 
 
 

@@ -23,6 +23,7 @@ class AWeapon;
 class AItem;
 class UBoxComponent;
 class UAnimMontage;
+class AWaypoint;
 
 UCLASS()
 class FYP_K1811535_API AEnemy : public ACharacter
@@ -33,6 +34,9 @@ public:
 	// Sets default values for this character's properties
 	AEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoints")
+	AWaypoint* NextWaypoint;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	EEnemyMovementStatus EnemyMovementStatus;
 
