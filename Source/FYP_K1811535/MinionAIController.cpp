@@ -46,8 +46,12 @@ void AMinionAIController::ConfigureAIPerception()
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 
 	AAIController::GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
-	AAIController::GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &AMinionAIController::OnPawnDetected);
-	AAIController::GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AMinionAIController::OnTargetPerceptionUpdated);
+	//AAIController::GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &AMinionAIController::OnPawnDetected);
+
+	AAIController::GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(
+		this, 
+		&AMinionAIController::OnTargetPerceptionUpdated
+	);
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 }
 
@@ -56,11 +60,11 @@ void AMinionAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (DistanceToPlayer > AISightRadius)
+	/*if (DistanceToPlayer > AISightRadius)
 	{
 		bIsPlayerDetected = false;
 		//GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), false);
-	}
+	}*/
 	
 }
 
@@ -96,24 +100,19 @@ void AMinionAIController::OnPawnDetected(const TArray<AActor*>& DetectedPawns)
 
 void AMinionAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (Stimulus.WasSuccessfullySensed())
+	if (Stimulus.WasSuccessfullySensed()) // When a stimulus is sensed
 	{
-		// continue from here :D
-		
-		UE_LOG(LogTemp, Warning, TEXT("Perception Changed "));
-
-		if (Cast<ACharacterBase>(Actor))
+		if (Cast<ACharacterBase>(Actor)) // If this stimulus is the player
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Player "));
+			DistanceToPlayer = GetPawn()->GetDistanceTo(Actor);
 			bIsPlayerDetected = true;
-			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true);
+			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true); // Notify the Behaviour Tree
 		}
-		
 	}
-	else if (!Stimulus.WasSuccessfullySensed() && Cast<ACharacterBase>(Actor))
+	else if (!Stimulus.WasSuccessfullySensed() && Cast<ACharacterBase>(Actor)) // If the player gets out of range (no longer sensed)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("no sense "));
 		GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), false);
+		bIsPlayerDetected = false;
 	}
 }
 
