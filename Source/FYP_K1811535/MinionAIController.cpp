@@ -17,6 +17,8 @@ AMinionAIController::AMinionAIController()
 	ConfigureAIPerception();
 	
 }
+
+
 void AMinionAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -57,7 +59,7 @@ void AMinionAIController::ConfigureAIPerception()
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 
 	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Configuration"));
-	HearingConfig->HearingRange = 6000.0f;
+	HearingConfig->HearingRange = 3000.0f;
 	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
 	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -111,19 +113,37 @@ void AMinionAIController::OnPawnDetected(const TArray<AActor*>& DetectedPawns)
 
 void AMinionAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (Stimulus.WasSuccessfullySensed()) // When a stimulus is sensed
+	if (Stimulus.Tag != FName("Noise"))
 	{
-		if (Cast<ACharacterBase>(Actor)) // If this stimulus is the player
+		if (Stimulus.WasSuccessfullySensed()) // When a stimulus is sensed
 		{
-			DistanceToPlayer = GetPawn()->GetDistanceTo(Actor);
-			bIsPlayerDetected = true;
-			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true); // Notify the Behaviour Tree
+			if (Cast<ACharacterBase>(Actor)) // If this stimulus is the player
+			{
+				PlayAgroSound();
+				DistanceToPlayer = GetPawn()->GetDistanceTo(Actor);
+				bIsPlayerDetected = true;
+				GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true); // Notify the Behaviour Tree
+			}
+		}
+		else if (!Stimulus.WasSuccessfullySensed() && Cast<ACharacterBase>(Actor)) // If the player gets out of range (no longer sensed)
+		{
+			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), false);
+			bIsPlayerDetected = false;
 		}
 	}
-	else if (!Stimulus.WasSuccessfullySensed() && Cast<ACharacterBase>(Actor)) // If the player gets out of range (no longer sensed)
+	
+	else if (Stimulus.Tag == FName("Noise"))
 	{
-		GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), false);
-		bIsPlayerDetected = false;
+		if (Stimulus.WasSuccessfullySensed()) // When a stimulus is sensed
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Noise heard!"));
+			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true);
+		}
+		else
+		{
+			
+		}
+		
 	}
 }
 

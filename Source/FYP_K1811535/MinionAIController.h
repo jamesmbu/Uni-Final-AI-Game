@@ -50,7 +50,8 @@ public:
 	bool bIsPlayerDetected = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	float DistanceToPlayer = 0.0f;
-	
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayAgroSound();
 protected:
 	virtual void BeginPlay() override;
 private:
