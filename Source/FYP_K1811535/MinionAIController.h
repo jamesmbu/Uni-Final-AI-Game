@@ -14,6 +14,7 @@ struct FAIStimulus;
  */
 class UBehaviorTree;
 class UAISenseConfig_Sight;
+class UAISenseConfig_Hearing;
 UCLASS()
 class FYP_K1811535_API AMinionAIController : public AAIController
 {
@@ -44,6 +45,7 @@ public:
 	float AIFieldOfView = 90.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	UAISenseConfig_Sight* SightConfig;
+	UAISenseConfig_Hearing* HearingConfig;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	bool bIsPlayerDetected = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)

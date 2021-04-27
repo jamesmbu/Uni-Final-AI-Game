@@ -6,6 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
 #include "Characters/CharacterBase.h"
 #include "Perception/AIPerceptionTypes.h"
 
@@ -39,6 +40,7 @@ void AMinionAIController::ConfigureAIPerception()
 	SightConfig->SightRadius = AISightRadius;
 	SightConfig->LoseSightRadius = AILoseSightRadius;
 	SightConfig->PeripheralVisionAngleDegrees = AIFieldOfView;
+	SightConfig->AutoSuccessRangeFromLastSeenLocation = AISightRadius / 2;
 	SightConfig->SetMaxAge(AISightAge);
 
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
@@ -53,6 +55,15 @@ void AMinionAIController::ConfigureAIPerception()
 		&AMinionAIController::OnTargetPerceptionUpdated
 	);
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
+
+	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Configuration"));
+	HearingConfig->HearingRange = 6000.0f;
+	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
+	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	HearingConfig->SetMaxAge(35.0f);
+	GetPerceptionComponent()->ConfigureSense(*HearingConfig);
+	
 }
 
 
