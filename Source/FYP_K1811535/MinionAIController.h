@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "UObject/NameTypes.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "MinionAIController.generated.h"
 
+struct FAIStimulus;
 /**
  * 
  */
@@ -26,7 +29,10 @@ public:
 	UFUNCTION()
 	void OnPawnDetected(const TArray<AActor*>& DetectedPawns); // When any pawn is detected by perception
 
-	
+	UFUNCTION()
+	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	UFUNCTION()
+	void OnTargetDetected();
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	float AISightRadius = 500.0f; // Distance-based visibility

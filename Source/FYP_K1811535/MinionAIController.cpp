@@ -7,6 +7,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Characters/CharacterBase.h"
+#include "Perception/AIPerceptionTypes.h"
 
 AMinionAIController::AMinionAIController()
 {
@@ -46,7 +47,7 @@ void AMinionAIController::ConfigureAIPerception()
 
 	AAIController::GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
 	AAIController::GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &AMinionAIController::OnPawnDetected);
-
+	AAIController::GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AMinionAIController::OnTargetPerceptionUpdated);
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 }
 
@@ -58,7 +59,7 @@ void AMinionAIController::Tick(float DeltaSeconds)
 	if (DistanceToPlayer > AISightRadius)
 	{
 		bIsPlayerDetected = false;
-		GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), false);
+		//GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), false);
 	}
 	
 }
@@ -79,19 +80,45 @@ void AMinionAIController::OnPossess(APawn* InPawn)
 
 void AMinionAIController::OnPawnDetected(const TArray<AActor*>& DetectedPawns)
 {
-	
 	for(int i = 0; i < DetectedPawns.Num(); i++)
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(DetectedPawns[i]);
-		if (Main)
+		if (Main) // detected pawn is the player
 		{
 			DistanceToPlayer = GetPawn()->GetDistanceTo(DetectedPawns[i]);
-			bIsPlayerDetected = true;
-			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true);
+			/*bIsPlayerDetected = true;
+			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true);*/
 		}
 	}
 	
 	
+}
+
+void AMinionAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+{
+	if (Stimulus.WasSuccessfullySensed())
+	{
+		// continue from here :D
+		
+		UE_LOG(LogTemp, Warning, TEXT("Perception Changed "));
+
+		if (Cast<ACharacterBase>(Actor))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Player "));
+			bIsPlayerDetected = true;
+			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true);
+		}
+		
+	}
+	else if (!Stimulus.WasSuccessfullySensed() && Cast<ACharacterBase>(Actor))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("no sense "));
+		GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), false);
+	}
+}
+
+void AMinionAIController::OnTargetDetected()
+{
 }
 
 
