@@ -59,7 +59,7 @@ void AMinionAIController::ConfigureAIPerception()
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 
 	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Configuration"));
-	HearingConfig->HearingRange = 3000.0f;
+	HearingConfig->HearingRange = 500.0f;
 	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
 	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -113,7 +113,8 @@ void AMinionAIController::OnPawnDetected(const TArray<AActor*>& DetectedPawns)
 
 void AMinionAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (Stimulus.Tag != FName("Noise"))
+	// SIGHT
+	if (Stimulus.Tag != FName("Noise")) // I don't know the tag for sight specifically
 	{
 		if (Stimulus.WasSuccessfullySensed()) // When a stimulus is sensed
 		{
@@ -131,13 +132,15 @@ void AMinionAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 			bIsPlayerDetected = false;
 		}
 	}
-	
+
+	// HEARING
 	else if (Stimulus.Tag == FName("Noise"))
 	{
-		if (Stimulus.WasSuccessfullySensed()) // When a stimulus is sensed
+		if (Stimulus.WasSuccessfullySensed() && Actor != GetPawn()) // When a stimulus is sensed
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Noise heard!"));
-			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true);
+			GetBlackboardComponent()->SetValueAsBool(TEXT("HeardNoise"), true);
+			GetBlackboardComponent()->SetValueAsVector(TEXT("InvestigateLocation"),Actor->GetActorLocation());
 		}
 		else
 		{
