@@ -2,7 +2,8 @@
 
 
 #include "Waypoint.h"
-#include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
+#include "Components/ArrowComponent.h"
 #include "Characters/Enemy.h"
 
 // Sets default values
@@ -14,9 +15,14 @@ AWaypoint::AWaypoint()
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
 	SetRootComponent(Root);
 
-	//BoxComponent->CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Box"));
-	//BoxComponent->SetupAttachment(GetRootComponent());
-	//BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWaypoint::OnPlayerEnter);
+	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	SphereComponent->InitSphereRadius(64.f);
+	SphereComponent->SetupAttachment(GetRootComponent());
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AWaypoint::OnPlayerEnter);
+
+	// Rotation to face at the waypoint
+	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
+	ArrowComponent->SetupAttachment(SphereComponent);
 }
 
 // Called when the game starts or when spawned

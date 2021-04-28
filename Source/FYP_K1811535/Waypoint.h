@@ -6,7 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Waypoint.generated.h"
 
-class UBoxComponent;
+class USphereComponent;
+class UArrowComponent;
+
 UCLASS()
 class FYP_K1811535_API AWaypoint : public AActor
 {
@@ -20,12 +22,21 @@ public:
 	USceneComponent* Root;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UBoxComponent* BoxComponent;
-
+	USphereComponent* SphereComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UArrowComponent* ArrowComponent;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AWaypoint* NextWaypoint;
-	
-protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float WaitTime = 2.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float WaitDeviation = 0.f;
+
+	protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
