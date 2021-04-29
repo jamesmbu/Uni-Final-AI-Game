@@ -30,7 +30,7 @@ void AMinionAIController::BeginPlay()
 		RunBehaviorTree(AIBehaviorTree);
 		
 		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
-		
+		CheckPatrolBehaviour();
 	}
 	
 }

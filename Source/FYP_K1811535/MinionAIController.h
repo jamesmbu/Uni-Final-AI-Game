@@ -52,7 +52,11 @@ public:
 	float DistanceToPlayer = 0.0f;
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayAgroSound();
-protected:
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CheckPatrolBehaviour(); // patrolling is a behaviour I have implemented by blueprint using blueprint elements which cannot be referenced in C++
+
+	protected:
 	virtual void BeginPlay() override;
 private:
 	UPROPERTY(EditAnywhere)
