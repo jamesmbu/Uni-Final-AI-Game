@@ -15,7 +15,6 @@ AMinionAIController::AMinionAIController()
 	PrimaryActorTick.bCanEverTick = true;
 	AAIController::SetGenericTeamId(FGenericTeamId(1));
 	ConfigureAIPerception();
-	
 }
 
 
@@ -25,14 +24,12 @@ void AMinionAIController::BeginPlay()
 	if (AIBehaviorTree)
 	{
 		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-		//ACharacterBase* Main = Cast<ACharacterBase>(PlayerPawn);
 		
 		RunBehaviorTree(AIBehaviorTree);
 		
 		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
 		CheckPatrolBehaviour();
 	}
-	
 }
 
 void AMinionAIController::ConfigureAIPerception()
@@ -56,6 +53,7 @@ void AMinionAIController::ConfigureAIPerception()
 		this, 
 		&AMinionAIController::OnTargetPerceptionUpdated
 	);
+	
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 
 	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Configuration"));
@@ -138,15 +136,10 @@ void AMinionAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 	{
 		if (Stimulus.WasSuccessfullySensed() && Actor != GetPawn()) // When a stimulus is sensed
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Noise heard!"));
 			GetBlackboardComponent()->SetValueAsBool(TEXT("HeardNoise"), true);
-			GetBlackboardComponent()->SetValueAsVector(TEXT("InvestigateLocation"),Actor->GetActorLocation());
+			GetBlackboardComponent()->SetValueAsVector(TEXT("InvestigateLocation"),
+				Actor->GetActorLocation());
 		}
-		else
-		{
-			
-		}
-		
 	}
 }
 

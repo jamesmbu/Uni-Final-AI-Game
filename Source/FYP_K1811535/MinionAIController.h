@@ -4,14 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "UObject/NameTypes.h"
 #include "Perception/AIPerceptionTypes.h"
 #include "MinionAIController.generated.h"
 
 struct FAIStimulus;
-/**
- * 
- */
 class UBehaviorTree;
 class UAISenseConfig_Sight;
 class UAISenseConfig_Hearing;
@@ -20,13 +16,19 @@ class FYP_K1811535_API AMinionAIController : public AAIController
 {
 	GENERATED_BODY()
 public:
+	// Constructor
 	AMinionAIController();
+
+	/* AI Controller Overrides */
 	virtual void Tick(float DeltaSeconds) override;
-
 	virtual void OnPossess(APawn* InPawn) override; // When the character plugs into the controller
+	/* <end> */
 
+	
 	//virtual FRotator GetControlRotation() const override; // For rotation of perception
 
+	
+	/* AI Perception: Dynamic Delegates */
 	UFUNCTION()
 	void OnPawnDetected(const TArray<AActor*>& DetectedPawns); // When any pawn is detected by perception
 
@@ -34,7 +36,10 @@ public:
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 	UFUNCTION()
 	void OnTargetDetected();
+	/* <end> */
+
 	
+	/* AI Perception: Properties */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	float AISightRadius = 800.0f; // Distance-based visibility
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
@@ -46,17 +51,25 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	UAISenseConfig_Sight* SightConfig;
 	UAISenseConfig_Hearing* HearingConfig;
+	/* <end> */
+
+	/* Custom properties */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	bool bIsPlayerDetected = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	float DistanceToPlayer = 0.0f;
-	UFUNCTION(BlueprintImplementableEvent)
-	void PlayAgroSound();
+	/* <end> */
 
+	/* Custom functions */
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayAgroSound(); // play a sound (configurable in the blueprint)
 	UFUNCTION(BlueprintImplementableEvent)
 	void CheckPatrolBehaviour(); // patrolling is a behaviour I have implemented by blueprint using blueprint elements which cannot be referenced in C++
+	/* <end> */
 
-	protected:
+	
+protected:
+	
 	virtual void BeginPlay() override;
 private:
 	UPROPERTY(EditAnywhere)

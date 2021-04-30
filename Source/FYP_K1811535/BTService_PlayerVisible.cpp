@@ -9,7 +9,7 @@
 
 UBTService_PlayerVisible::UBTService_PlayerVisible()
 {
-	NodeName = "Update Player Location if Seen";
+	NodeName = "Update Unconscious Player Location If LOS";
 }
 
 void UBTService_PlayerVisible::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -30,7 +30,6 @@ void UBTService_PlayerVisible::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 			GetSelectedBlackboardKey(), PlayerPawn->GetActorLocation()
 		);
 	}
-	
 	else
 	{
 		OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
