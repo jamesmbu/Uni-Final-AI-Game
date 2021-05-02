@@ -47,7 +47,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	float AILoseSightRadius = AISightRadius * 1.1f; // Distance in which AI loses sight of a previously visible object
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
-	float AIFieldOfView = 90.f;
+	float AIFieldOfView = 60.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	UAISenseConfig_Sight* SightConfig;
 	UAISenseConfig_Hearing* HearingConfig;
@@ -66,7 +66,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void CheckPatrolBehaviour(); // patrolling is a behaviour I have implemented by blueprint using blueprint elements which cannot be referenced in C++
 	/* <end> */
-
+	UFUNCTION()
+	void Death();
 	
 protected:
 	

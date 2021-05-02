@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 #include "FYP_K1811535/MainPlayerController.h"
+
 // Sets default values
 AEnemy::AEnemy()
 {
@@ -56,7 +57,6 @@ void AEnemy::DeactivateCollision()
 
 void AEnemy::Attack()
 {
-	
 	if (Alive())
 	{
 		if (AIController)
@@ -76,7 +76,6 @@ void AEnemy::Attack()
 			}
 		}
 	}
-	
 }
 
 void AEnemy::Melee(AActor* OtherActor)
@@ -119,16 +118,11 @@ void AEnemy::AttackEnd()
 			GetWorldTimerManager().ClearTimer(AttackTimer);
 			CombatTarget = nullptr;
 		}
-		/*if (EnemyMovementStatus == EEnemyMovementStatus::EMS_Attack) // so movement is after the animation ends
-				{
-					MoveToTarget(Main);
-					CombatTarget = nullptr;
-				}*/
 	}
 }
 
-float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
+float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
+	AController* EventInstigator, AActor* DamageCauser)
 {
 	HealthComponent->DecrementHealth(DamageAmount);
 	if (HealthComponent->ActiveHealth <= 0)
@@ -140,6 +134,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 
 void AEnemy::Die()
 {
+	DetachFromControllerPendingDestroy();
 	/* Play the death animation */
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && CombatMontage)
@@ -191,12 +186,14 @@ void AEnemy::BeginPlay()
 	DetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::DetectionSphereOnOverlapEnd);
 	CombatSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::CombatSphereOnOverlapBegin);
 	CombatSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::CombatSphereOnOverlapEnd);
+
 	CombatCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::CombatObjectOnOverlapBegin);
 	CombatCollision->OnComponentEndOverlap.AddDynamic(this, &AEnemy::CombatObjectOnOverlapEnd);
 	CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CombatCollision->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	CombatCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	CombatCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	CombatCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn,
+		ECollisionResponse::ECR_Overlap);
 }
 
 // Called every frame
@@ -312,7 +309,9 @@ void AEnemy::CombatObjectOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 		{
 			if (DamageTypeClass)
 			{
-				UGameplayStatics::ApplyDamage(Main, Damage, AIController, this, DamageTypeClass);
+				UGameplayStatics::ApplyDamage(
+					Main, Damage, AIController,
+					this, DamageTypeClass);
 			}
 		}
 	}

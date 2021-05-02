@@ -18,6 +18,14 @@ AMinionAIController::AMinionAIController()
 }
 
 
+void AMinionAIController::Death()
+{
+	if (AIBehaviorTree)
+	{
+		UnPossess();	
+	}
+}
+
 void AMinionAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -100,7 +108,7 @@ void AMinionAIController::OnPawnDetected(const TArray<AActor*>& DetectedPawns)
 		ACharacterBase* Main = Cast<ACharacterBase>(DetectedPawns[i]);
 		if (Main) // detected pawn is the player
 		{
-			DistanceToPlayer = GetPawn()->GetDistanceTo(DetectedPawns[i]);
+			//DistanceToPlayer = GetPawn()->GetDistanceTo(DetectedPawns[i]);
 			/*bIsPlayerDetected = true;
 			GetBlackboardComponent()->SetValueAsBool(TEXT("CanSeePlayer"), true);*/
 		}

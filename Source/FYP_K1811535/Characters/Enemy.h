@@ -129,11 +129,14 @@ public:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
-		virtual void CombatObjectOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		virtual void CombatObjectOnOverlapBegin(
+			UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+			bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		virtual void CombatObjectOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		virtual void CombatObjectOnOverlapEnd(
+			UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 	
@@ -156,7 +159,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser) override;
 
 	void Die();
 

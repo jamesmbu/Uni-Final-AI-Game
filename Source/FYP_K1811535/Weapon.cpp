@@ -90,7 +90,6 @@ void AWeapon::Equip(ACharacterBase* Character)
 		if (!bWeaponParticle)
 		{
 			IdleParticleSystemComponent->Deactivate();
-			
 		}
 	}
 }

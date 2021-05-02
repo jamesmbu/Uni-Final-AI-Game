@@ -22,5 +22,7 @@ public:
 private:
 	void Melee();
 protected:
-	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
+		uint8* NodeMemory) override;
 };
+

@@ -27,8 +27,11 @@ class UBoxComponent;
 UCLASS()
 class FYP_K1811535_API AWeapon : public AItem
 {
+	
 	GENERATED_BODY()
+	
 public:
+	
 	AWeapon();
 
 	EWeaponState WeaponState;
@@ -64,6 +67,7 @@ public:
 		void CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 			const FHitResult& SweepResult);
+
 	UFUNCTION()
 		void CombatOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);

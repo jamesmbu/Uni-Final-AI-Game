@@ -12,8 +12,6 @@ UMyBTTask_Melee::UMyBTTask_Melee()
 	NodeName = TEXT("Melee");
 }
 
-
-
 EBTNodeResult::Type UMyBTTask_Melee::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);

@@ -20,7 +20,6 @@ void UEnemyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	Super::NativeUpdateAnimation(DeltaSeconds);
 	if (!Pawn)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("nullptr"));
 		Pawn = TryGetPawnOwner();
 	}
 	if (Pawn)
@@ -32,10 +31,3 @@ void UEnemyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		Enemy = Cast<AEnemy>(Pawn);
 	}
 }
-
-
-/*void UEnemyAnimInstance::CPPUpdateAnimation()
-{
-	
-
-}*/

@@ -123,7 +123,6 @@ void ACharacterBase::InteractBegin()
 void ACharacterBase::InteractEnd()
 {
 	bInteractKeyDown = false;
-	
 }
 
 void ACharacterBase::MainAction()
