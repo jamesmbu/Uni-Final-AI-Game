@@ -126,7 +126,15 @@ public:
 	// For gamepad analogue stick aiming- rate at which rotation will occur
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move & Look Variables")
 	float RotationRate = 70.f;
+
+	/* Death */
+	void Die();
+	void ReloadLevel();
+	bool dying = false;
+	UFUNCTION(BlueprintCallable)
+	void DieFinal();
 	
+	FTimerHandle DeathTimer;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

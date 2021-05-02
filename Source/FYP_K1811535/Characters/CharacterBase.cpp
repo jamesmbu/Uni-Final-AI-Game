@@ -12,6 +12,7 @@
 #include "Animation/AnimInstance.h" 
 #include "FYP_K1811535/MainPlayerController.h"
 #include "FYP_K1811535/Characters/Enemy.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -52,6 +53,28 @@ ACharacterBase::ACharacterBase()
 	GetCharacterMovement()->AirControl = 0.2f;
 
 	bHasCombatTarget = false;
+}
+
+void ACharacterBase::Die()
+{
+	dying = true;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && CombatMontage)
+	{
+		AnimInstance->Montage_Play(CombatMontage, 1.f);
+		AnimInstance->Montage_JumpToSection("Death");
+	}
+}
+
+void ACharacterBase::ReloadLevel()
+{
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+}
+
+void ACharacterBase::DieFinal()
+{
+	//GetWorldTimerManager().SetTimer(DeathTimer, this, &ACharacterBase::ReloadLevel , 2.3f);
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
 // Called when the game starts or when spawned
@@ -127,6 +150,7 @@ void ACharacterBase::InteractEnd()
 
 void ACharacterBase::MainAction()
 {
+	if (dying) return;
 	bMainActionKeyDown = true;
 	if (EquippedWeapon)
 	{
@@ -184,6 +208,7 @@ void ACharacterBase::AttackEnd()
  */
 void ACharacterBase::SetStance()
 {
+	if (dying) return;
 	if (isAttackStance) // transition between stances: attack -> neutral
 	{
 		isAttackStance = false;
@@ -200,6 +225,7 @@ void ACharacterBase::SetStance()
 
 void ACharacterBase::SprintBegin()
 {
+	if (dying) return;
 	if (canSprint && canSprintStamina)
 	{
 		isSprinting = true;
@@ -220,6 +246,7 @@ void ACharacterBase::SprintEnd()
 
 void ACharacterBase::MoveForward(float AxisValue)
 {
+	if (dying) return;
 	if (Controller && AxisValue != 0.f && !bAttacking)
 	{
 		if (AxisValue > 0) // Forward movement
@@ -242,6 +269,7 @@ void ACharacterBase::MoveForward(float AxisValue)
 
 void ACharacterBase::MoveRight(float AxisValue)
 {
+	if (dying) return;
 	if (Controller && AxisValue != 0 && !bAttacking)
 	{
 		
@@ -284,12 +312,7 @@ float ACharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	HealthComponent->DecrementHealth(DamageAmount);
 	if (HealthComponent->ActiveHealth <= 0.f)
 	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if (AnimInstance && CombatMontage)
-		{
-			AnimInstance->Montage_Play(CombatMontage, 1.f);
-			AnimInstance->Montage_JumpToSection("Death");
-		}
+		Die();
 	}
 	return DamageAmount;
 }
