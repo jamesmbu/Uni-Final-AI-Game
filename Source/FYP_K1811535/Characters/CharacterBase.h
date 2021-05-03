@@ -94,6 +94,7 @@ public:
 	/* Weapon Equipping */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Items)
 	AWeapon* EquippedWeapon;
+	AWeapon* UnequippedWeapon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items)
 	AItem* ActiveOverlappingItem;

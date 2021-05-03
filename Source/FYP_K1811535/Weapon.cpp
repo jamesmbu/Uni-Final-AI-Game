@@ -94,6 +94,32 @@ void AWeapon::Equip(ACharacterBase* Character)
 	}
 }
 
+void AWeapon::Unequip(ACharacterBase* Character)
+{
+	if (!Character) return;
+	SetInstigator(Character->GetController());
+
+	SkeletalMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera,
+		ECollisionResponse::ECR_Ignore);
+	SkeletalMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn,
+		ECollisionResponse::ECR_Ignore);
+
+	SkeletalMesh->SetSimulatePhysics(false);
+
+	const USkeletalMeshSocket* UnequippedSocket = Character->GetMesh()->GetSocketByName("UnequipSocket");
+	if (UnequippedSocket)
+	{
+		UnequippedSocket->AttachActor(this, Character->GetMesh());
+		Character->SetEquippedWeapon(nullptr);
+		Character->SetActiveOverlappingItem(nullptr);
+	}
+	if (OnEquipSound) UGameplayStatics::PlaySound2D(this, OnEquipSound);
+	if (!bWeaponParticle)
+	{
+		IdleParticleSystemComponent->Deactivate();
+	}
+}
+
 void AWeapon::CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor)

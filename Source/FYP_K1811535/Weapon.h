@@ -59,7 +59,8 @@ public:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 	void Equip(ACharacterBase* Character);
-
+	void Unequip(ACharacterBase* Character);
+	
 	FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; }
 	FORCEINLINE EWeaponState GetWeaponState() { return WeaponState; }
 

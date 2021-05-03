@@ -139,6 +139,8 @@ void ACharacterBase::InteractBegin()
 		{
 			Weapon->Equip(this);
 			SetActiveOverlappingItem(nullptr);
+			isAttackStance = false;
+			SetStance();
 		}
 	}
 }
@@ -213,11 +215,21 @@ void ACharacterBase::SetStance()
 	{
 		isAttackStance = false;
 		bUseControllerRotationYaw = false;
+		if (EquippedWeapon)
+		{
+			UnequippedWeapon = EquippedWeapon;
+			EquippedWeapon->Unequip(this);
+		}
 	}
 	else if (!isAttackStance) // transition between stances: neutral -> attack
 	{
 		isAttackStance = true;
 		bUseControllerRotationYaw = true;
+		if (UnequippedWeapon)
+		{
+			UnequippedWeapon->Equip(this);
+			UnequippedWeapon = nullptr;
+		}
 	}
 	bPlayerAttackStance.Broadcast(isAttackStance);
 
@@ -319,7 +331,7 @@ float ACharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 
 void ACharacterBase::SetEquippedWeapon(AWeapon* WeaponToSet)
 {
-	if (EquippedWeapon)
+	if (EquippedWeapon && WeaponToSet != nullptr)
 	{
 		EquippedWeapon->Destroy();
 	}
