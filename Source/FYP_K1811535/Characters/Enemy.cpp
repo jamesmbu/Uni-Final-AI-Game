@@ -39,6 +39,7 @@ AEnemy::AEnemy()
 	AttackLightTime = 1.0f;
 	AttackHeavyTime = 5.0f;
 	Damage = 25.f;
+	HeavyAttackDamageMultiplier = 1.5f;
 
 	EnemyMovementStatus = EEnemyMovementStatus::EMS_Idle;
 
