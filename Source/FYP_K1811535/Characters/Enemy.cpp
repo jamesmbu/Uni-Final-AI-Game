@@ -36,8 +36,8 @@ AEnemy::AEnemy()
 	CombatCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("CombatCollision"));
 	CombatCollision->SetupAttachment(GetMesh(), FName("EnemySocket"));
 	
-	AttackMinTime = 0.5f;
-	AttackMaxTime = 3.5f;
+	AttackLightTime = 1.0f;
+	AttackHeavyTime = 5.0f;
 	Damage = 25.f;
 
 	EnemyMovementStatus = EEnemyMovementStatus::EMS_Idle;
@@ -66,13 +66,26 @@ void AEnemy::Attack()
 		}
 		if (!bAttacking)
 		{
+			int _index = FMath::RandRange(0, 1);
+			
+			AttackTime = AttackSpeeds[_index];
+			if (_index == 0)
+			{
+				Damage = DamageInitial * HeavyAttackDamageMultiplier;
+			}
+			else if (_index == 1)
+			{
+				Damage = DamageInitial;
+			}
+			float AnimationLength = CombatMontage->GetSectionLength(CombatMontage->GetSectionIndex(FName("Attack")));
+			float scaleToDesiredAttackTime =  AnimationLength/ AttackTime;
+			
 			bAttacking = true;
 			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 			if (AnimInstance)
 			{
-				AnimInstance->Montage_Play(CombatMontage, 1.f);
+				AnimInstance->Montage_Play(CombatMontage, scaleToDesiredAttackTime);
 				AnimInstance->Montage_JumpToSection(FName("Attack"), CombatMontage);
-				
 			}
 		}
 	}
@@ -105,9 +118,9 @@ void AEnemy::AttackEnd()
 {
 	bAttacking = false;
 	
-	if (bOverlappingCombatSphere)
+	if (bOverlappingCombatSphere && !HasBT)
 	{
-		float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
+		//float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
 		GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
 	}
 	else if (!bOverlappingCombatSphere && !HasBT)
@@ -194,6 +207,9 @@ void AEnemy::BeginPlay()
 	CombatCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	CombatCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn,
 		ECollisionResponse::ECR_Overlap);
+
+	DamageInitial = Damage;
+	AttackSpeeds = { AttackHeavyTime, AttackLightTime };
 }
 
 // Called every frame
@@ -251,7 +267,7 @@ void AEnemy::DetectionSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponen
 
 void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && Alive())
+	if (OtherActor && Alive() && !HasBT)
 	{
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
 		{
@@ -266,7 +282,7 @@ void AEnemy::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 				CombatTarget = Main;
 				bOverlappingCombatSphere = true;
 				//SetEnemyMovementStatus(EEnemyMovementStatus::EMS_Attack);
-				float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
+				//float AttackTime = FMath::FRandRange(AttackMinTime, AttackMaxTime);
 				GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, 0.8);
 				
 			}
@@ -304,11 +320,13 @@ void AEnemy::CombatObjectOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 {
 	if (OtherActor)
 	{
+		//UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *OtherActor->GetName());
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
 		if (Main)
 		{
 			if (DamageTypeClass)
 			{
+				//UE_LOG(LogTemp, Warning, TEXT("no"));
 				UGameplayStatics::ApplyDamage(
 					Main, Damage, AIController,
 					this, DamageTypeClass);

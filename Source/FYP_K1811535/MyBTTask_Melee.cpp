@@ -34,6 +34,7 @@ EBTNodeResult::Type UMyBTTask_Melee::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 
 	// Initiate melee attack from the enemy character to the player
 	Character->Melee(PlayerPawn);
+	OwnerComp.GetBlackboardComponent()->SetValueAsFloat("AttackDuration", Character->AttackTime);
 
 	return EBTNodeResult::Succeeded;
 }

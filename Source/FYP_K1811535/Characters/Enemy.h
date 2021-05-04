@@ -64,6 +64,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	float Damage;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	float HeavyAttackDamageMultiplier;
+	
+	float DamageInitial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particles")
 	UParticleSystem* HitParticles;
@@ -86,10 +91,12 @@ public:
 	FTimerHandle AttackTimer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	float AttackMinTime;
+	float AttackLightTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	float AttackMaxTime;
-
+	float AttackHeavyTime;
+	UPROPERTY()
+	float AttackTime;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TSubclassOf<UDamageType> DamageTypeClass;
 
@@ -168,4 +175,6 @@ public:
 	void DeathEnd();
 
 	bool Alive();
+private:
+	TArray<float> AttackSpeeds;
 };

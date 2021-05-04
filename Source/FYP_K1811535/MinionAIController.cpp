@@ -90,6 +90,8 @@ void AMinionAIController::Tick(float DeltaSeconds)
 void AMinionAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+	//AEnemy* Enemy = Cast<AEnemy>(InPawn);
+	//GetBlackboardComponent()->SetValueAsFloat("AttackDuration",Enemy->AttackTime);
 }
 
 /*FRotator AMinionAIController::GetControlRotation() const
