@@ -20,6 +20,7 @@ UHealthComponent::UHealthComponent()
 	MaxHealth = 100.f;
 	ActiveHealth = MaxHealth;
 	DamageCushioning = 0.f;
+	HealthRecoveryRate = 2.f;
 
 	/* STAMINA */
 	MaxStamina = 100.f;
@@ -90,9 +91,11 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (ActiveHealth < MaxHealth)
+	if (ActiveHealth < MaxHealth && ActiveHealth > 0.f)
 	{
-		ActiveHealth += 0.01f;
+		// percentage-based healing per second
+		float amt_regen = (HealthRecoveryRate * 0.01f * MaxHealth) * DeltaTime;
+		ActiveHealth += amt_regen;
 	}
 	
 	float DeltaStaminaDrain = StaminaDrainRate * DeltaTime;
@@ -103,29 +106,20 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	case EStaminaStatus::ESS_Normal:
 		if(bIsSprinting)
 		{
-			if (ActiveStamina - DeltaStaminaDrain <= MinSprintStamina) // if nearly out of stamina
-			{
+			if (ActiveStamina - DeltaStaminaDrain <= MinSprintStamina) // if nearly out of stamina, update status
 				SetStaminaStatus(EStaminaStatus::ESS_BelowMinimum);
-				ActiveStamina -= DeltaStaminaDrain;
-			}
-			else
-			{
-				ActiveStamina -= DeltaStaminaDrain;
-			}
-			if (owningCharacter)
-				owningCharacter->canSprintStamina = true;
 			
+			ActiveStamina -= DeltaStaminaDrain; // deduct stamina
+			if (owningCharacter) // can still sprint
+				owningCharacter->canSprintStamina = true;
 		}
 		else // not sprinting
 		{
 			if (ActiveStamina + DeltaStaminaDrain >= MaxStamina)
-			{
 				ActiveStamina = MaxStamina; // stop stamina increasing past the maximum threshold
-			}
+			
 			else
-			{
 				ActiveStamina += DeltaStaminaRecovery; // increase stamina, like normal
-			}
 		}
 		break;
 	case EStaminaStatus::ESS_BelowMinimum:
@@ -190,7 +184,6 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		{
 			ActiveStamina += DeltaStaminaRecovery;
 		}
-
 		break;
 		
 	default:

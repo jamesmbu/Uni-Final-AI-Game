@@ -232,7 +232,6 @@ void ACharacterBase::SetStance()
 		}
 	}
 	bPlayerAttackStance.Broadcast(isAttackStance);
-
 }
 
 void ACharacterBase::SprintBegin()

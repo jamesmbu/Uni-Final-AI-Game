@@ -43,7 +43,9 @@ public:
 	float ActiveHealth; // current health
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
 	float DamageCushioning; // damage reduction
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float HealthRecoveryRate; // rate of health recovery, % per second
+	
 	void DecrementHealth(float Amount);
 	void HandleDeath();
 	

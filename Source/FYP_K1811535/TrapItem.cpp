@@ -16,7 +16,7 @@ void ATrapItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 	Super::OnOverlapBegin(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 
-	if (OtherActor)
+	/*if (OtherActor)
 	{
 		ADefaultPlayerCharacter* Player =  Cast<ADefaultPlayerCharacter>(OtherActor); // cast to see if the colliding actor is the player
 		if (Player)
@@ -27,6 +27,20 @@ void ATrapItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 			}
 			
 			Player->HealthComponent->DecrementHealth(Damage);
+			Destroy();
+		}
+	}*/
+	if (OtherActor)
+	{
+		UHealthComponent* theirHealthComp = OtherActor->FindComponentByClass<UHealthComponent>();
+		if (theirHealthComp != nullptr)
+		{
+			if (OverlapParticles)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), OverlapParticles, GetActorLocation(), FRotator(0.f), true);
+			}
+			
+			UGameplayStatics::ApplyDamage(OtherActor, Damage,WeaponInstigator, this, DamageTypeClass);
 			Destroy();
 		}
 	}
