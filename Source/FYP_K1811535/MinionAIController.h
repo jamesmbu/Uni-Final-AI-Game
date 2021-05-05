@@ -68,6 +68,8 @@ public:
 	/* <end> */
 	UFUNCTION()
 	void Death();
+	UFUNCTION(BlueprintCallable)
+	void AttackAnimationEndNotify();
 	
 protected:
 	

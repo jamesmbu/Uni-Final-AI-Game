@@ -9,6 +9,8 @@
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Characters/CharacterBase.h"
 #include "Perception/AIPerceptionTypes.h"
+#include "FYP_K1811535/Characters/Enemy.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AMinionAIController::AMinionAIController()
 {
@@ -26,6 +28,12 @@ void AMinionAIController::Death()
 	}
 }
 
+void AMinionAIController::AttackAnimationEndNotify()
+{
+	GetBlackboardComponent()->SetValueAsBool(TEXT("AttackAnimationComplete"), true);
+	UE_LOG(LogTemp, Warning, TEXT("True"));
+}
+
 void AMinionAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -37,6 +45,8 @@ void AMinionAIController::BeginPlay()
 		
 		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
 		CheckPatrolBehaviour();
+		AEnemy* Enemy = Cast<AEnemy>(GetPawn());
+		if (Enemy) GetBlackboardComponent()->SetValueAsFloat("WalkSpeed", Enemy->AI_SpeedFast);
 	}
 }
 
@@ -90,8 +100,9 @@ void AMinionAIController::Tick(float DeltaSeconds)
 void AMinionAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	//AEnemy* Enemy = Cast<AEnemy>(InPawn);
-	//GetBlackboardComponent()->SetValueAsFloat("AttackDuration",Enemy->AttackTime);
+	
+	
+	
 }
 
 /*FRotator AMinionAIController::GetControlRotation() const

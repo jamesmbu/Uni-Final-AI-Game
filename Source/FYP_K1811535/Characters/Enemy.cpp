@@ -44,6 +44,8 @@ AEnemy::AEnemy()
 	EnemyMovementStatus = EEnemyMovementStatus::EMS_Idle;
 
 	DeathDelay = 0.6f;
+
+	AI_SpeedFast = 400.f;
 }
 
 void AEnemy::ActivateCollision()
@@ -136,7 +138,7 @@ void AEnemy::AttackEnd()
 }
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
-	AController* EventInstigator, AActor* DamageCauser)
+                         AController* EventInstigator, AActor* DamageCauser)
 {
 	HealthComponent->DecrementHealth(DamageAmount);
 	if (HealthComponent->ActiveHealth <= 0)

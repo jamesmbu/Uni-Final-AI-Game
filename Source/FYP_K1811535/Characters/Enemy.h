@@ -34,6 +34,9 @@ public:
 	// Sets default values for this character's properties
 	AEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	float AI_SpeedFast;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoints")
 	AWaypoint* NextWaypoint;
 	
@@ -163,6 +166,7 @@ public:
 	
 	void Attack();
 	void Melee(AActor* OtherActor); // custom for use from behaviour tree task
+
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 
