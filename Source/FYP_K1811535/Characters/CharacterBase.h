@@ -31,7 +31,7 @@ class FYP_K1811535_API ACharacterBase : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ACharacterBase();
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	AEnemy* CombatTarget;
 	

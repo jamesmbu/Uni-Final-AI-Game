@@ -328,7 +328,7 @@ void AEnemy::CombatObjectOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *OtherActor->GetName());
 		ACharacterBase* Main = Cast<ACharacterBase>(OtherActor);
-		if (Main)
+		if (Main && Main->dying == false)
 		{
 			if (DamageTypeClass)
 			{

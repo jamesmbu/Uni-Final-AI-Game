@@ -191,6 +191,7 @@ void ACharacterBase::Attack()
 			}
 			AnimInstance->Montage_Play(CombatMontage, AnimationTimeMult);
 			AnimInstance->Montage_JumpToSection(SectionName, CombatMontage);
+			HealthComponent->ActiveStamina = HealthComponent->ActiveStamina - 20.f;
 		}
 	}
 	
