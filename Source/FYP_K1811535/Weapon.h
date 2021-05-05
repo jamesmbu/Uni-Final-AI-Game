@@ -34,13 +34,16 @@ public:
 	
 	AWeapon();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Stamina")
+	float StamDrain;
+	
 	EWeaponState WeaponState;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Particles")
-		bool bWeaponParticle;
+	bool bWeaponParticle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Sound")
-		class USoundCue* OnEquipSound;
+	class USoundCue* OnEquipSound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SkeletalMesh")
 		USkeletalMeshComponent* SkeletalMesh;
