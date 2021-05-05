@@ -45,7 +45,10 @@ AEnemy::AEnemy()
 
 	DeathDelay = 0.6f;
 
+	// AI Blackboard Values (AI controller accesses these on begin play)
 	AI_SpeedFast = 400.f;
+	AI_ConsecutiveAttackDelay = 3.f;
+	AI_ConsecutiveAttackDelay_Deviation = 1.5f;
 }
 
 void AEnemy::ActivateCollision()

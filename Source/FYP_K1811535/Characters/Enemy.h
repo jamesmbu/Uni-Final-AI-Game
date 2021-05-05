@@ -36,6 +36,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	float AI_SpeedFast;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	float AI_ConsecutiveAttackDelay;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	float AI_ConsecutiveAttackDelay_Deviation;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoints")
 	AWaypoint* NextWaypoint;

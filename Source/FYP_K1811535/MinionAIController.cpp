@@ -46,7 +46,12 @@ void AMinionAIController::BeginPlay()
 		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
 		CheckPatrolBehaviour();
 		AEnemy* Enemy = Cast<AEnemy>(GetPawn());
-		if (Enemy) GetBlackboardComponent()->SetValueAsFloat("WalkSpeed", Enemy->AI_SpeedFast);
+		if (Enemy)
+		{
+			GetBlackboardComponent()->SetValueAsFloat("WalkSpeed", Enemy->AI_SpeedFast);
+			GetBlackboardComponent()->SetValueAsFloat("NextAttackDelay", Enemy->AI_ConsecutiveAttackDelay);
+		}
+		GetBlackboardComponent()->SetValueAsBool(TEXT("AttackAnimationComplete"), true);
 	}
 }
 
@@ -75,7 +80,7 @@ void AMinionAIController::ConfigureAIPerception()
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 
 	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Configuration"));
-	HearingConfig->HearingRange = 500.0f;
+	HearingConfig->HearingRange = 650.0f;
 	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
 	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -160,6 +165,7 @@ void AMinionAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 			GetBlackboardComponent()->SetValueAsBool(TEXT("HeardNoise"), true);
 			GetBlackboardComponent()->SetValueAsVector(TEXT("InvestigateLocation"),
 				Actor->GetActorLocation());
+			GetBlackboardComponent()->SetValueAsObject(TEXT("NoisyFriend"), Actor);
 		}
 	}
 }
