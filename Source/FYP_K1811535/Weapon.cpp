@@ -152,9 +152,11 @@ void AWeapon::CombatOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActo
 void AWeapon::ActivateCollision()
 {
 	CombatCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//UE_LOG(LogTemp, Warning, TEXT("Open"));
 }
 
 void AWeapon::DeactivateCollision()
 {
 	CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//UE_LOG(LogTemp, Warning, TEXT("Closed"));
 }

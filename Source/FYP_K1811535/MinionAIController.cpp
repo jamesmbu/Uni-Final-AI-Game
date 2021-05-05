@@ -80,7 +80,7 @@ void AMinionAIController::ConfigureAIPerception()
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 
 	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Configuration"));
-	HearingConfig->HearingRange = 650.0f;
+	HearingConfig->HearingRange = 850.0f;
 	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
 	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;

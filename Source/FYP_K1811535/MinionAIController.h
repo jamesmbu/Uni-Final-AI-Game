@@ -41,11 +41,11 @@ public:
 	
 	/* AI Perception: Properties */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
-	float AISightRadius = 800.0f; // Distance-based visibility
+	float AISightRadius = 1000.0f; // Distance-based visibility
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	float AISightAge = 5.0f; // How long an object in sight is remembered for
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
-	float AILoseSightRadius = AISightRadius * 1.1f; // Distance in which AI loses sight of a previously visible object
+	float AILoseSightRadius = AISightRadius * 1.15f; // Distance in which AI loses sight of a previously visible object
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	float AIFieldOfView = 60.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
