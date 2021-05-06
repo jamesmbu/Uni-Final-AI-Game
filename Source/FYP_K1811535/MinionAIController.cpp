@@ -31,7 +31,6 @@ void AMinionAIController::Death()
 void AMinionAIController::AttackAnimationEndNotify()
 {
 	GetBlackboardComponent()->SetValueAsBool(TEXT("AttackAnimationComplete"), true);
-	UE_LOG(LogTemp, Warning, TEXT("True"));
 }
 
 void AMinionAIController::BeginPlay()

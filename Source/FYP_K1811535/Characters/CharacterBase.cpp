@@ -154,7 +154,8 @@ void ACharacterBase::MainAction()
 {
 	if (dying) return;
 	bMainActionKeyDown = true;
-	if (EquippedWeapon && HealthComponent->ActiveStamina - EquippedWeapon->StamDrain > 0)
+	if (EquippedWeapon 
+		&& HealthComponent->ActiveStamina - EquippedWeapon->StamDrain > 0)
 	{
 		Attack();
 	}
@@ -191,7 +192,8 @@ void ACharacterBase::Attack()
 			}
 			AnimInstance->Montage_Play(CombatMontage, AnimationTimeMult);
 			AnimInstance->Montage_JumpToSection(SectionName, CombatMontage);
-			HealthComponent->ActiveStamina = HealthComponent->ActiveStamina - EquippedWeapon->StamDrain;
+			HealthComponent->ActiveStamina = 
+				(HealthComponent->ActiveStamina) - (EquippedWeapon->StamDrain);
 		}
 	}
 	

@@ -35,9 +35,8 @@ EBTNodeResult::Type UMyBTTask_Melee::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 
 	// Initiate melee attack from the enemy character to the player
 	Character->Melee(PlayerPawn);
-	OwnerComp.GetBlackboardComponent()->SetValueAsFloat("AttackDuration", Character->AttackTime);
 	
-	//Signify that an attack has begun through the animation tracker
+	// Signify that an attack has begun through the animation tracker
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool("AttackAnimationComplete", false);
 	
 	// Get the delay before the next attack with random deviation applied
