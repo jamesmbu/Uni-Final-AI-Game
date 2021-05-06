@@ -85,7 +85,7 @@ void AEnemy::Attack()
 				Damage = DamageInitial;
 			}
 			float AnimationLength = CombatMontage->GetSectionLength(CombatMontage->GetSectionIndex(FName("Attack")));
-			float scaleToDesiredAttackTime =  AnimationLength/ AttackTime;
+			scaleToDesiredAttackTime =  AnimationLength/ AttackTime;
 			
 			bAttacking = true;
 			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();

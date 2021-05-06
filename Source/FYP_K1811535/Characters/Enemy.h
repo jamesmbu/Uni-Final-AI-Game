@@ -40,7 +40,8 @@ public:
 	float AI_ConsecutiveAttackDelay;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	float AI_ConsecutiveAttackDelay_Deviation;
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+		float scaleToDesiredAttackTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoints")
 	AWaypoint* NextWaypoint;
 	
