@@ -194,6 +194,7 @@ void ACharacterBase::Attack()
 			AnimInstance->Montage_JumpToSection(SectionName, CombatMontage);
 			HealthComponent->ActiveStamina = 
 				(HealthComponent->ActiveStamina) - (EquippedWeapon->StamDrain);
+			PlayAttackSound();
 		}
 	}
 	

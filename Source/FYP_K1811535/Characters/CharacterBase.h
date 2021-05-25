@@ -57,6 +57,8 @@ public:
 	void Attack();
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayAttackSound();
 	bool bMainActionKeyDown;
 	// Animations
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")

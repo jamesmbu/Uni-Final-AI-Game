@@ -81,7 +81,7 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float DamageAmount, cons
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Health Component of %s (ID: %s) has no reference to GameMode"),*GetOwner()->GetActorLabel(), *GetOwner()->GetName());
+			//UE_LOG(LogTemp, Warning, TEXT("Health Component of %s (ID: %s) has no reference to GameMode"),*GetOwner()->GetActorLabel(), *GetOwner()->GetName());
 		}
 	}
 }

@@ -23,6 +23,7 @@ class ADefaultPlayerCharacter;
 class ACharacterBase;
 class USoundCue;
 class UBoxComponent;
+class USoundCue;
 
 UCLASS()
 class FYP_K1811535_API AWeapon : public AItem
@@ -33,7 +34,7 @@ class FYP_K1811535_API AWeapon : public AItem
 public:
 	
 	AWeapon();
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Stamina")
 	float StamDrain;
 	
@@ -43,10 +44,13 @@ public:
 	bool bWeaponParticle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Sound")
-	class USoundCue* OnEquipSound;
+	USoundCue* OnEquipSound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Sound")
+	USoundCue* AttackSound;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SkeletalMesh")
-		USkeletalMeshComponent* SkeletalMesh;
+	USkeletalMeshComponent* SkeletalMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item | Combat")
 		UBoxComponent* CombatCollision;
